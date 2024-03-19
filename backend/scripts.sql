@@ -56,7 +56,8 @@ CREATE TABLE Plan (
   PlanID INT PRIMARY KEY AUTO_INCREMENT,
   UserID INT,
   PlanDate DATE,
-  PlanTime TIME,
+  StartTime TIME,
+  EndTime TIME,
   AlarmReminder BOOLEAN,
   Tag VARCHAR(50),
   ImportanceLevel INT

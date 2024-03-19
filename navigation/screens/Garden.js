@@ -93,9 +93,9 @@ const Garden = () => {
           mode="outlined"
           style={styles.btnScore}
           labelStyle={styles.btnLabelScore}
-          onPress={() => {
-            setScore(parseInt(score) + 50);
-          }}
+          // onPress={() => {
+          //   setScore(parseInt(score) + 50);
+          // }}
         >
           Your Score: {score}
         </Button>

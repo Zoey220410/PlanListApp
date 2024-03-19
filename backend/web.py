@@ -473,7 +473,8 @@ def create_plan():
     user_id = user_tokens[token]
 
     date = data.get('date')
-    time = data.get('time')
+    startTime = data.get('startTime')
+    endTime = data.get('endTime')
     alarm_reminder = data.get('alarmReminder', False)
     tag = data.get('tag')
     importance_level = data.get('importanceLevel')
@@ -482,9 +483,9 @@ def create_plan():
     cursor = con.cursor(DictCursor)
 
     cursor.execute(
-        "INSERT INTO Plan (UserID, PlanDate, PlanTime, AlarmReminder, Tag, ImportanceLevel) "
+        "INSERT INTO Plan (UserID, PlanDate, StartTime, EndTime, AlarmReminder, Tag, ImportanceLevel) "
         "VALUES (%s, %s, %s, %s, %s, %s)",
-        (user_id, date, time, alarm_reminder, tag, importance_level)
+        (user_id, date, startTime, endTime, alarm_reminder, tag, importance_level)
     )
 
     con.commit()

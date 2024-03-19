@@ -115,8 +115,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "90%",
 
-    backgroundColor:
-      "linear-gradient(180.03deg, rgba(233, 229, 141, 0.32) 0.02%, rgba(233, 229, 141, 0.289638) 24.32%, rgba(233, 229, 141, 0.192721) 47.3%, rgba(233, 229, 141, 0.0928) 70.99%)",
+    backgroundColor: "rgba(166, 214, 165, 0.45)",
   },
   text: { fontSize: 30, fontWeight: "bold" },
   textList: { flex: 0.5, fontSize: 24 },
