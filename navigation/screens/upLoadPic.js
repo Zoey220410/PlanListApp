@@ -23,27 +23,27 @@ const DiscoverPostScreen = () => {
       <View style={styles.content}>
         <TouchableOpacity onPress={handleSelectPhoto} style={styles.photoSelector}>
           <Image source={require('./path-to-your-icon.png')} style={styles.icon} />
-          <Text style={styles.photoText}>选择照片</Text>
+          <Text style={styles.photoText}>Select a photo</Text>
         </TouchableOpacity>
         <TextInput
           style={styles.inputTitle}
           onChangeText={setTitle}
           value={title}
-          placeholder="添加标题"
+          placeholder="Add a title"
         />
         <TextInput
           style={styles.inputText}
           onChangeText={setText}
           value={text}
-          placeholder="添加文本"
+          placeholder="Add a text"
           multiline
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={() => {}} style={styles.cancelButton}>
-            <Text style={styles.buttonText}>取消</Text>
+            <Text style={styles.buttonText}>Delete</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleShare} style={styles.shareButton}>
-            <Text style={styles.buttonText}>分享</Text>
+            <Text style={styles.buttonText}>Share</Text>
           </TouchableOpacity>
         </View>
       </View>
