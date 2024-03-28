@@ -1,46 +1,53 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const Task = ({ text, completeTask }) => {
+const Task = (props) => {
+  let tagColor;
+  switch (props.tag) {
+    case "Study":
+      tagColor = "rgba(172, 213, 243, 0.45)";
+      break;
+    case "Work":
+      tagColor = "#A6D6A5";
+      break;
+    case "Entertainment":
+      tagColor = "#FFB6C1";
+      break;
+    case "Life":
+      tagColor = "#FFFF90";
+      break;
+    default:
+      tagColor = "#FFF";
+  }
+
   return (
-    <View style={styles.item}>
-      <View style={styles.itemLeft}>
-        <View style={styles.square}></View>
-        <Text style={styles.itemText}>text</Text>
+    <View style={(styles.item, { backgroundColor: tagColor })}>
+      <View style={styles.square}>
+        <Text style={(styles.itemText, { fontSize: 24 })}>{props.plan}</Text>
+        <Text style={styles.itemText}>
+          {props.startTime}-{props.endTime}
+        </Text>
       </View>
-      <TouchableOpacity
-        style={styles.circular}
-        onPress={completeTask}
-      ></TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: "#FFF",
-    padding: 15,
     borderRadius: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  itemLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
+    marginBottom: 50,
+    width: "80%",
+    height: "auto",
   },
   square: {
-    width: 24,
-    height: 24,
-    backgroundColor: "#55BCF6",
     opacity: 0.4,
     borderRadius: 5,
     marginRight: 15,
+    flexDirection: "column",
   },
   itemText: {
-    maxWidth: "80%",
+    maxWidth: "100%",
+    fontSize: 18,
   },
   circular: {
     width: 12,

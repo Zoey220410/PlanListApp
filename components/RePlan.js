@@ -15,8 +15,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import db from "../App";
 import { collection, addDoc } from "firebase/firestore";
 
-const Plan = ({ visible, onClose }) => {
-  const [plan, setPlan] = useState("");
+const RePlan = ({ newplan, visible, onClose }) => {
+  const [plan, setPlan] = useState(null);
   const [planDate, setPlanDate] = useState("");
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
@@ -26,6 +26,10 @@ const Plan = ({ visible, onClose }) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [activeButton, setActiveButton] = useState(0);
+
+  useEffect(() => {
+    setPlan(newplan);
+  }, [newplan]);
 
   const handleButtonPress = (buttonId) => {
     const tags = ["Study", "Work", "Entertainment", "Life"];
@@ -72,7 +76,7 @@ const Plan = ({ visible, onClose }) => {
     >
       <View style={styles.containerStyle}>
         <View style={styles.headTitle}>
-          <Text style={styles.text}>Create your plan</Text>
+          <Text style={styles.text}>Renew your plan</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -217,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Plan;
+export default RePlan;

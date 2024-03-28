@@ -5,14 +5,14 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 //Screens
 import PlanScreen from "./screens/planScreen";
-import GardenScreen from "./screens/Garden";
+import BinScreen from "./screens/binScreen";
 import ProfileScreen from "./screens/profileScreen";
 import DiscoverScreen from "./screens/discoverScreen";
 
 //Screen names
 const planName = "Plans";
 const discoverName = "Discover";
-const gardenName = "Garden";
+const binName = "Recycle Bin";
 const profileName = "Profile";
 
 const Tab = createBottomTabNavigator();
@@ -29,7 +29,7 @@ export default function MainContainer() {
 
             if (rn === planName) {
               iconName = focused ? "home" : "home-outline";
-            } else if (rn === gardenName) {
+            } else if (rn === binName) {
               iconName = "flower";
             } else if (rn === discoverName) {
               iconName = focused ? "list" : "list-outline";
@@ -53,7 +53,7 @@ export default function MainContainer() {
         })}
       >
         <Tab.Screen name={planName} component={PlanScreen} />
-        <Tab.Screen name={gardenName} component={GardenScreen} />
+        <Tab.Screen name={binName} component={BinScreen} />
         <Tab.Screen name={discoverName} component={DiscoverScreen} />
         <Tab.Screen name={profileName} component={ProfileScreen} />
       </Tab.Navigator>

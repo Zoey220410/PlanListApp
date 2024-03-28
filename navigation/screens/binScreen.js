@@ -11,39 +11,33 @@ import {
   Platform,
 } from "react-native";
 import Task from "../../components/task";
-import Plan from "../../components/Plan";
+import RePlan from "../../components/RePlan";
 import db from "../../App";
 import { doc, getDoc } from "firebase/firestore";
 
 let testData = [
   {
-    plan: "Meeting",
-    startTime: "3/27/2024, 22:36:47",
-    endTime: "3/27/2024, 22:36:47",
+    plan: "Pre",
+    startTime: "3/21/2024, 22:36:47",
+    endTime: "3/21/2024, 22:36:47",
     tag: "Work",
     alarmReminder: true,
   },
   {
-    plan: "HW",
-    startTime: "3/27/2024, 22:36:47",
-    endTime: "3/27/2024, 22:36:47",
+    plan: "Moudule 1",
+    startTime: "3/25/2024, 22:36:47",
+    endTime: "3/25/2024, 22:36:47",
     tag: "Study",
-    alarmReminder: true,
-  },
-  {
-    plan: "Market",
-    startTime: "3/27/2024, 22:36:47",
-    endTime: "3/27/2024, 22:36:47",
-    tag: "Life",
     alarmReminder: true,
   },
 ];
 
-export default function PlanScreen() {
+export default function BinScreen() {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [plans, setPlans] = useState(null);
+  const [newplan, setNewplan] = useState("");
 
   // useEffect(() => {
   //   getPlans();
@@ -103,12 +97,7 @@ export default function PlanScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.headTitle}>
-        <Text style={styles.text}>Plans Today</Text>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <View style={styles.addWrapper}>
-            <Text style={styles.addText}>+</Text>
-          </View>
-        </TouchableOpacity>
+        <Text style={styles.text}>Find Back Your Plans</Text>
       </View>
 
       <ScrollView
@@ -119,14 +108,15 @@ export default function PlanScreen() {
         style={{ flex: 0.8 }}
       >
         <View>
-          <View style={styles.items}>
+          <View style={styles.items} onPress={() => completeTask(index)}>
             {/* This is where the tasks will go! */}
             {testData.map((item, index) => {
               return (
                 <TouchableOpacity
                   key={index}
                   onPress={() => {
-                    completeTask(index);
+                    setModalVisible(true);
+                    setNewplan(item.plan);
                     console.log(item.plan);
                   }}
                 >
@@ -145,7 +135,11 @@ export default function PlanScreen() {
       </ScrollView>
 
       <View>
-        <Plan visible={modalVisible} onClose={handleModalClose} />
+        <RePlan
+          newplan={newplan}
+          visible={modalVisible}
+          onClose={handleModalClose}
+        />
       </View>
     </View>
   );
@@ -160,7 +154,7 @@ const styles = StyleSheet.create({
   },
   headTitle: {
     flex: 0.2,
-    backgroundColor: "rgba(172, 213, 243, 0.45)",
+    backgroundColor: "#A6D6A5",
     mixBlendMode: "multiply",
     flexDirection: "row",
     justifyContent: "space-between",
