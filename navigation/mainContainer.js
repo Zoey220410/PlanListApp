@@ -7,7 +7,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import PlanScreen from "./screens/planScreen";
 import BinScreen from "./screens/binScreen";
 import ProfileScreen from "./screens/profileScreen";
-import DiscoverScreen from "./screens/discoverScreen";
+import DiscoverScreen from "./screens/add";
 
 //Screen names
 const planName = "Plans";

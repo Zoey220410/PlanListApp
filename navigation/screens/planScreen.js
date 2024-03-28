@@ -127,7 +127,6 @@ export default function PlanScreen() {
                   key={index}
                   onPress={() => {
                     completeTask(index);
-                    console.log(item.plan);
                   }}
                 >
                   <Task
@@ -177,6 +176,7 @@ const styles = StyleSheet.create({
   },
   items: {
     marginTop: 30,
+    gap: "10%",
   },
   writeTaskWrapper: {
     position: "absolute",

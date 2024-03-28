@@ -23,7 +23,14 @@ const Task = (props) => {
   return (
     <View style={(styles.item, { backgroundColor: tagColor })}>
       <View style={styles.square}>
-        <Text style={(styles.itemText, { fontSize: 24 })}>{props.plan}</Text>
+        <Text
+          style={
+            (styles.itemText,
+            { fontSize: 24, color: "#009", fontWeight: "bold" })
+          }
+        >
+          {props.plan}
+        </Text>
         <Text style={styles.itemText}>
           {props.startTime}-{props.endTime}
         </Text>
@@ -35,9 +42,14 @@ const Task = (props) => {
 const styles = StyleSheet.create({
   item: {
     borderRadius: 10,
-    marginBottom: 50,
     width: "80%",
     height: "auto",
+    marginBottom: 10,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
   },
   square: {
     opacity: 0.4,
