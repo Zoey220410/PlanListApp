@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Card } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Swipeout from "react-native-swipeout";
 
-const Task = (props) => {
+const ReTask = (props) => {
   let tagColor;
   switch (props.tag) {
     case "Study":
@@ -23,14 +23,14 @@ const Task = (props) => {
 
   const [swipeBtns, setSwipeBtns] = useState([
     {
-      text: "Done",
+      text: "Readd",
       color: "green",
-      onPress: () => props.onDelete(props.planId),
+      onPress: () => props.onReAdd(props.planId),
     },
     {
       text: "Delete",
       color: "red",
-      onPress: () => props.onDeleteTransfer(props.planId),
+      onPress: () => props.onDelete(props.planId),
     },
   ]);
 
@@ -91,4 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Task;
+export default ReTask;

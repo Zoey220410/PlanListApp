@@ -13,7 +13,6 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { TextInput, List, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import db from "../App";
 import { collection, addDoc } from "firebase/firestore";
 
 const Post = ({ visible, onClose }) => {

@@ -3,7 +3,12 @@ import MainContainer from "./navigation/mainContainer";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  Firestore,
+  getFirestore,
+  collection,
+  addDoc,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
@@ -17,7 +22,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore();
+const db = getFirestore(app);
+// console.log(db instanceof Firestore);
 
 function App() {
   return <MainContainer />;

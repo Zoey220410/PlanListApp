@@ -10,10 +10,12 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import Task from "../../components/task";
+import ReTask from "../../components/ReTask";
 import RePlan from "../../components/RePlan";
-import db from "../../App";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  deleteRecycle,
+  getRecyclePlans,
+} from "../../firebase-backend/recyclePlans-db";
 
 let testData = [
   {
@@ -33,61 +35,39 @@ let testData = [
 ];
 
 export default function BinScreen() {
-  const [task, setTask] = useState();
-  const [taskItems, setTaskItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [plans, setPlans] = useState(null);
+  const [bin, setBin] = useState([]);
   const [newplan, setNewplan] = useState("");
+  const [reAddId, setReAddId] = useState(null);
 
-  // useEffect(() => {
-  //   getPlans();
-  //   console.log(plans);
-  // }, []);
+  useEffect(() => {
+    getRePlans();
+  }, []);
 
-  const getPlans = async () => {
+  useEffect(() => {
+    getRePlans();
+  }, [modalVisible]);
+
+  const userId = "1";
+
+  const getRePlans = async () => {
     try {
-      planCollection = doc(db, "plans");
-      plans = await getDoc(planCollection);
-
-      const filteredPlans = response.data.filter((league) => {
-        console.log(league);
-      });
-
-      setPlans(filteredPlans);
+      const binPlans = await getRecyclePlans(userId);
+      setBin(binPlans);
     } catch (error) {
       console.error("Error fetching plans:", error);
       alert("Failed to fetch plans");
     }
   };
 
-  const handleAddTask = () => {
-    Keyboard.dismiss();
-    setTaskItems([...taskItems, task]);
-    setTask(null);
-    fetch("http://110.41.7.179:443/api/plan/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token:
-          "dbea3e79cd7c84a3b96ece091712205e7b64e56a8de33b5106511d3b55f601af",
-      },
-      body: JSON.stringify({
-        text: task,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handleDelete = async (id) => {
+    await deleteRecycle(userId, id);
+    await getRePlans();
   };
 
-  const completeTask = (index) => {
-    let itemsCopy = [...taskItems];
-    itemsCopy.splice(index, 1);
-    setTaskItems(itemsCopy);
+  const handleReAdd = (id) => {
+    setModalVisible(true);
+    setReAddId(id);
   };
 
   const handleModalClose = () => {
@@ -99,8 +79,34 @@ export default function BinScreen() {
       <View style={styles.headTitle}>
         <Text style={styles.text}>Find Back Your Plans</Text>
       </View>
-
       <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}
+        keyboardShouldPersistTaps="handled"
+        persistentScrollbar={true}
+        style={{ flex: 0.8 }}
+      >
+        {/* <View style={styles.items}> */}
+        {/* This is where the tasks will go! */}
+        {bin.map((item, index) => {
+          return (
+            <ReTask
+              key={item.id}
+              plan={item.data.plan}
+              startTime={item.data.startTime}
+              endTime={item.data.endTime}
+              tag={item.data.tag}
+              alarmReminder={item.data.alarmReminder}
+              planId={item.id}
+              onDelete={handleDelete}
+              onReAdd={handleReAdd}
+            />
+          );
+        })}
+        {/* </View> */}
+      </ScrollView>
+      {/* <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
         }}
@@ -108,9 +114,9 @@ export default function BinScreen() {
         style={{ flex: 0.8 }}
       >
         <View>
-          <View style={styles.items} onPress={() => completeTask(index)}>
+          <View style={styles.items}>
             {/* This is where the tasks will go! */}
-            {testData.map((item, index) => {
+      {/* {bin.map((item, index) => {
               return (
                 <TouchableOpacity
                   key={index}
@@ -120,25 +126,28 @@ export default function BinScreen() {
                     console.log(item.plan);
                   }}
                 >
-                  <Task
-                    plan={item.plan}
-                    startTime={item.startTime}
-                    endTime={item.endTime}
-                    tag={item.tag}
-                    alarmReminder={item.alarmReminder}
+                  <ReTask
+                    plan={item.data.plan}
+                    startTime={item.data.startTime}
+                    endTime={item.data.endTime}
+                    tag={item.data.tag}
+                    alarmReminder={item.data.alarmReminder}
+                    planId={item.id}
+                    onDelete={handleDelete}
+                    onReAdd={handleReAdd}
                   />
                 </TouchableOpacity>
               );
             })}
           </View>
-        </View>
-      </ScrollView>
-
+        </View> */}
+      {/* </ScrollView> */}
       <View>
         <RePlan
           newplan={newplan}
           visible={modalVisible}
           onClose={handleModalClose}
+          reAddId={reAddId}
         />
       </View>
     </View>
@@ -170,7 +179,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   items: {
-    marginTop: 30,
+    flex: 1,
+    height: "100%",
+    width: "100%",
   },
   writeTaskWrapper: {
     position: "absolute",
