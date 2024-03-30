@@ -16,6 +16,7 @@ import {
   deleteRecycle,
   getRecyclePlans,
 } from "../../firebase-backend/recyclePlans-db";
+import { useFocusEffect } from "@react-navigation/native";
 
 let testData = [
   {
@@ -40,9 +41,11 @@ export default function BinScreen() {
   const [newplan, setNewplan] = useState("");
   const [reAddId, setReAddId] = useState(null);
 
-  useEffect(() => {
-    getRePlans();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getRePlans();
+    }, [])
+  );
 
   useEffect(() => {
     getRePlans();
@@ -169,6 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingLeft: "5%",
+    marginBottom: "5%",
   },
   text: {
     color: "black",

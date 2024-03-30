@@ -6,19 +6,19 @@ const ReTask = (props) => {
   let tagColor;
   switch (props.tag) {
     case "Study":
-      tagColor = "rgba(172, 213, 243, 0.45)";
+      tagColor = "#CCDEE0";
       break;
     case "Work":
-      tagColor = "#A6D6A5";
+      tagColor = "#CDB0E8";
       break;
     case "Entertainment":
-      tagColor = "#FFB6C1";
+      tagColor = "#EBC2DA";
       break;
     case "Life":
-      tagColor = "#FFFF90";
+      tagColor = "#F3D5A5";
       break;
     default:
-      tagColor = "#FFF";
+      tagColor = "#DBDCE6";
   }
 
   const [swipeBtns, setSwipeBtns] = useState([

@@ -17,6 +17,7 @@ import { getPlans } from "../../firebase-backend/plans-db";
 import { deleteTodo } from "../../firebase-backend/plans-db";
 import { Button } from "react-native-paper";
 import { createRecyclePlans } from "../../firebase-backend/recyclePlans-db";
+import { useFocusEffect } from "@react-navigation/native";
 
 let testData = [
   {
@@ -49,9 +50,11 @@ export default function PlanScreen() {
   const [choice, setChoice] = useState("All");
   const userId = "1";
 
-  useEffect(() => {
-    getTodos();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getTodos();
+    }, [])
+  );
 
   useEffect(() => {
     getTodos();
@@ -266,7 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: "10%",
-    marginTop: "5%",
+    margin: "5%",
     justifyContent: "center",
     alignItems: "center",
   },
