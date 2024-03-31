@@ -15,7 +15,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { createPlan } from "../firebase-backend/plans-db";
 import { deleteRecycle } from "../firebase-backend/recyclePlans-db";
 
-const RePlan = ({ newplan, visible, onClose, reAddId }) => {
+const RePlan = ({ visible, onClose, reAddId, newplan }) => {
   const [plan, setPlan] = useState(null);
   const [planDate, setPlanDate] = useState("");
   const [startTime, setStartTime] = useState(new Date());

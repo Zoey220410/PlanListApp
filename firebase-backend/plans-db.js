@@ -34,7 +34,7 @@ export const getPlans = async (userId) => {
     })
   );
 
-  const convertDate = (dateString) => {
+  const convertDay = (dateString) => {
     const sides = dateString.split(",");
     dateString = sides[0];
     const parts = dateString.split("/");
@@ -43,6 +43,29 @@ export const getPlans = async (userId) => {
       const day = parseInt(parts[1], 10);
       const year = parseInt(parts[2], 10);
       return new Date(year, month, day);
+    } else {
+      return null;
+    }
+  };
+
+  const convertDate = (dateTimeString) => {
+    const sides = dateTimeString.split(",");
+    const datePart = sides[0];
+    const timePart = sides[1];
+
+    const dateParts = datePart.split("/");
+    const timeParts = timePart.split(":");
+
+    if (dateParts.length === 3 && timeParts.length === 3) {
+      const month = parseInt(dateParts[0], 10) - 1;
+      const day = parseInt(dateParts[1], 10);
+      const year = parseInt(dateParts[2], 10);
+
+      const hour = parseInt(timeParts[0], 10);
+      const minute = parseInt(timeParts[1], 10);
+      const second = parseInt(timeParts[2], 10);
+
+      return new Date(year, month, day, hour, minute, second);
     } else {
       return null;
     }
@@ -70,7 +93,7 @@ export const getPlans = async (userId) => {
   const filteredTodos = [];
 
   for (const todo of result) {
-    planDate = convertDate(todo.data.endTime);
+    planDate = convertDay(todo.data.endTime);
     const currentDate = new Date();
 
     if (isBeforeDay(planDate, currentDate)) {
@@ -93,7 +116,7 @@ export const getPlans = async (userId) => {
     const startTimeA = convertDate(a.startTime).getTime();
     const startTimeB = convertDate(b.startTime).getTime();
 
-    return startTimeA - startTimeB;
+    return startTimeB - startTimeA;
   });
 
   return filteredTodos;

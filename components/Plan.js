@@ -37,12 +37,14 @@ const Plan = ({ visible, onClose }) => {
     const currentDate = selectedDate;
     setShow(false);
     setStartTime(currentDate);
+    console.log(startTime);
   };
 
   const onChange2 = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShow(false);
     setEndTime(currentDate);
+    console.log(endTime);
   };
 
   const handleSubmit = async () => {
@@ -54,6 +56,8 @@ const Plan = ({ visible, onClose }) => {
         alarmReminder: alarmReminder,
         tag: tag,
       };
+
+      console.log(data.startTime);
 
       const planId = await createPlan(userId, data);
 
@@ -89,14 +93,14 @@ const Plan = ({ visible, onClose }) => {
               value={startTime}
               mode={"date"}
               is24Hour={true}
-              onChange={onChange1}
+              onChange={onChange2}
             />
             <DateTimePicker
               testID="dateTimePicker"
               value={startTime}
               mode={"time"}
               is24Hour={true}
-              onChange={onChange2}
+              onChange={onChange1}
             />
           </View>
         </SafeAreaView>

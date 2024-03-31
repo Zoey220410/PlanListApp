@@ -38,7 +38,7 @@ let testData = [
 export default function BinScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [bin, setBin] = useState([]);
-  const [newplan, setNewplan] = useState("");
+  const [newPlan, setNewPlan] = useState(null);
   const [reAddId, setReAddId] = useState(null);
 
   useFocusEffect(
@@ -50,6 +50,12 @@ export default function BinScreen() {
   useEffect(() => {
     getRePlans();
   }, [modalVisible]);
+
+  useEffect(() => {
+    if (newPlan != null) {
+      setModalVisible(true);
+    }
+  }, [newPlan]);
 
   const userId = "1";
 
@@ -69,8 +75,15 @@ export default function BinScreen() {
   };
 
   const handleReAdd = (id) => {
-    setModalVisible(true);
     setReAddId(id);
+    const readdPlan = bin.find((item) => {
+      return item.id === id;
+    });
+    if (readdPlan) {
+      setNewPlan(readdPlan.data.plan);
+    } else {
+      console.log("No plan found with ID:", id);
+    }
   };
 
   const handleModalClose = () => {
@@ -109,48 +122,12 @@ export default function BinScreen() {
         })}
         {/* </View> */}
       </ScrollView>
-      {/* <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-        }}
-        keyboardShouldPersistTaps="handled"
-        style={{ flex: 0.8 }}
-      >
-        <View>
-          <View style={styles.items}>
-            {/* This is where the tasks will go! */}
-      {/* {bin.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    setModalVisible(true);
-                    setNewplan(item.plan);
-                    console.log(item.plan);
-                  }}
-                >
-                  <ReTask
-                    plan={item.data.plan}
-                    startTime={item.data.startTime}
-                    endTime={item.data.endTime}
-                    tag={item.data.tag}
-                    alarmReminder={item.data.alarmReminder}
-                    planId={item.id}
-                    onDelete={handleDelete}
-                    onReAdd={handleReAdd}
-                  />
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View> */}
-      {/* </ScrollView> */}
       <View>
         <RePlan
-          newplan={newplan}
           visible={modalVisible}
           onClose={handleModalClose}
           reAddId={reAddId}
+          newplan={newPlan}
         />
       </View>
     </View>

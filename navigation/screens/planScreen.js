@@ -183,6 +183,7 @@ export default function PlanScreen() {
         {plans.map((item, index) => {
           return (
             <Task
+              key={item.id}
               plan={item.data.plan}
               startTime={item.data.startTime}
               endTime={item.data.endTime}
