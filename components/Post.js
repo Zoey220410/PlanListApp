@@ -40,7 +40,7 @@ const Post = ({ visible, onClose }) => {
     >
       <View style={styles.containerStyle}>
         <View style={styles.headTitle}>
-          <Text style={styles.text}>Create your plan</Text>
+          <Text style={styles.text}>Create Your Post</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   headTitle: {
     height: "20%",
     width: "100%",
-    backgroundColor: "rgba(172, 213, 243, 0.45)",
+    backgroundColor: "#FFC0CB",
     mixBlendMode: "multiply",
     flexDirection: "row",
     justifyContent: "space-between",

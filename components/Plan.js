@@ -28,7 +28,7 @@ const Plan = ({ visible, onClose }) => {
   const userId = "1";
 
   const handleButtonPress = (buttonId) => {
-    const tags = ["Study", "Work", "Entertainment", "Life", "Other"];
+    const tags = ["Work", "Study", "Entertainment", "Life", "Other"];
     setActiveButton(buttonId);
     setTag(tags[buttonId - 1]);
   };

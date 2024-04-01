@@ -11,6 +11,8 @@ import {
 import { IconButton } from "react-native-paper";
 
 import Post from "../../components/Post";
+import fitImage from "../../assets/images/fit.webp";
+import studyImage from "../../assets/images/study.png";
 
 const CommunityScreen = () => {
   // 假设有一个帖子数组，每个帖子包含图片URL、标题、用户名和点赞数
@@ -24,15 +26,17 @@ const CommunityScreen = () => {
       username: "Monica",
       likes: 227,
       isLiked: false,
+      url: fitImage,
     },
     {
       id: "2",
       imageUrl: "your_post_image_url_here",
-      title: "Get up early and study",
+      title: "Get up early and study SAT",
       content: "Study day!!",
       username: "Jackson",
       likes: 150,
       isLiked: false,
+      url: studyImage,
     },
     // 更多帖子...
   ];
@@ -82,10 +86,7 @@ const CommunityScreen = () => {
         style={{ flex: 0.8 }}
         renderItem={({ item, index }) => (
           <View style={styles.postCard}>
-            <Image
-              style={styles.postImage}
-              source={require("../../images/background.png")}
-            />
+            <Image style={styles.postImage} source={item.url} />
             <View style={styles.postContent}>
               <Text style={styles.postTitle}>{item.title}</Text>
               <Text style={styles.content}>{item.content}</Text>

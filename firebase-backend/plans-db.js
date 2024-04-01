@@ -116,7 +116,7 @@ export const getPlans = async (userId) => {
     const startTimeA = convertDate(a.startTime).getTime();
     const startTimeB = convertDate(b.startTime).getTime();
 
-    return startTimeB - startTimeA;
+    return startTimeA - startTimeB;
   });
 
   return filteredTodos;

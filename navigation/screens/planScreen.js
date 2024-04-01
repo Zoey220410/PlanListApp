@@ -97,7 +97,7 @@ export default function PlanScreen() {
   };
 
   const handleSelect = (buttonId) => {
-    const tags = ["All", "Study", "Work", "Entertainment", "Life", "Other"];
+    const tags = ["All", "Work", "Study", "Entertainment", "Life", "Other"];
     setActiveButton(buttonId);
     setChoice(tags[buttonId]);
   };
