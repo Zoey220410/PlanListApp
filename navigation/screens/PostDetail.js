@@ -1,33 +1,82 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, Modal, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  FlatList,
+  View,
+  Image,
+  ScrollView,
+} from "react-native";
 import { TextInput, List, Button } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
+import { updateSharing } from "../../firebase-backend/post-db";
 
 const PostDetail = () => {
   const userId = "1";
   const route = useRoute();
   const { postInfo } = route.params;
+  const [review, setReview] = useState("");
   console.log(postInfo);
 
-  const navigation = useNavigation();
-  const onClose = () => {
-    navigation.navigate("discoverScreen"); // navigate to OtherScreen
+  const handleAdd = async () => {
+    if (review.trim() === "") return;
+    try {
+      const newpost = postInfo;
+      const reviewInfo = { content: review, userId: userId };
+      newpost.reviews.push(reviewInfo);
+      console.log(newpost);
+      await updateSharing(newpost);
+      setReview("");
+    } catch (error) {
+      console.error("Error Update Reviews", error);
+    }
   };
 
   return (
-    <View style={styles.containerStyle}>
-      <View style={{ flex: 0.5 }}>
-        {postInfo.imageUrl && (
-          <Image
-            source={{ uri: postInfo.imageUrl }}
-            style={{ width: 200, height: 200 }}
+    <ScrollView>
+      <View style={styles.containerStyle}>
+        <View style={{ height: "auto" }}>
+          {postInfo.imageUrl && (
+            <Image
+              source={{ uri: postInfo.imageUrl }}
+              style={{ width: 350, height: 350 }}
+            />
+          )}
+          <List.Section>
+            <List.Subheader style={styles.text}>
+              {postInfo.title}
+            </List.Subheader>
+            <List.Item title={postInfo.content} />
+          </List.Section>
+        </View>
+        <View style={styles.reviewInput}>
+          <TextInput
+            label="Write your comments"
+            value={review}
+            onChangeText={(text) => setReview(text)}
+            mode="outlined(disabled)"
+            style={{ width: "70%" }}
           />
-        )}
-        <Text>{postInfo.title}</Text>
-        <Text>{postInfo.content}</Text>
+          <Button onPress={handleAdd} mode="outlined">
+            <Text>Add</Text>
+          </Button>
+        </View>
+
+        <List.Section style={styles.reviewLayout}>
+          <List.Subheader style={styles.reviews}>
+            {postInfo.reviews.length} Comments
+          </List.Subheader>
+          {postInfo.reviews.map((item, index) => (
+            <List.Item
+              key={index}
+              title={item.userId}
+              description={item.content}
+            />
+          ))}
+        </List.Section>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -64,11 +113,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
   },
-  switchContainer: {
+  reviewInput: {
     flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
     gap: "10%",
+  },
+  reviews: {
+    textAlign: "center",
+    fontSize: 12,
+  },
+  reviewLayout: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+    height: "auto",
   },
 });
 
