@@ -1,43 +1,52 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  Modal,
-  View,
-  ScrollView,
-  FlatList,
-  Switch,
-  SafeAreaView,
-  KeyboardAvoidingView,
-} from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { StyleSheet, Text, Modal, View, Image } from "react-native";
 import { TextInput, List, Button } from "react-native-paper";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { collection, addDoc } from "firebase/firestore";
+import * as ImagePicker from "expo-image-picker";
+import { createSharing } from "../firebase-backend/post-db";
 
 const Post = ({ visible, onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [image, setImage] = useState("");
+
+  const userId = "1";
 
   const handleSubmit = async () => {
-    console.log("Title:", title);
-    console.log("Content:", content);
+    try {
+      data = {
+        title: title,
+        content: content,
+        postTime: new Date(),
+        likes: 0,
+        reviews: [],
+        userId: userId,
+        likeByUsers: [],
+      };
 
-    await addDoc(collection(db, "plans"), {
-      title: title,
-      content: content,
+      const postId = await createSharing(userId, data, image);
+
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
 
-    onClose();
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
   };
 
   return (
-    <Modal
-      visible={visible}
-      onRequestClose={onClose}
-      animationType="slide"
-      // transparent={true}
-    >
+    <Modal visible={visible} onRequestClose={onClose} animationType="slide">
       <View style={styles.containerStyle}>
         <View style={styles.headTitle}>
           <Text style={styles.text}>Create Your Post</Text>
@@ -54,6 +63,12 @@ const Post = ({ visible, onClose }) => {
           value={content}
           onChangeText={setContent}
         />
+        <Button onPress={pickImage} mode="contained">
+          <Text>Choose Image</Text>
+        </Button>
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        )}
         <View
           style={{
             width: "50%",

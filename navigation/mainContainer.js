@@ -1,25 +1,27 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 //Screens
 import PlanScreen from "./screens/planScreen";
 import BinScreen from "./screens/binScreen";
 import ProfileScreen from "./screens/profileScreen";
-import DiscoverScreen from "./screens/add";
-
-//Screen names
-const planName = "Plans";
-const discoverName = "Discover";
-const binName = "Recycle Bin";
-const profileName = "Profile";
+import DiscoverScreen from "./screens/discoverScreen";
+import PostDetail from "./screens/PostDetail";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function MainContainer() {
-  return (
-    <NavigationContainer>
+  const planName = "Plans";
+  const binName = "Recycle Bin";
+  const discoverName = "Discover";
+  const profileName = "Profile";
+
+  const BottomTabNavigator = () => {
+    return (
       <Tab.Navigator
         initialRouteName={planName}
         screenOptions={({ route }) => ({
@@ -37,7 +39,6 @@ export default function MainContainer() {
               iconName = "person";
             }
 
-            // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: "orange",
@@ -57,6 +58,19 @@ export default function MainContainer() {
         <Tab.Screen name={discoverName} component={DiscoverScreen} />
         <Tab.Screen name={profileName} component={ProfileScreen} />
       </Tab.Navigator>
+    );
+  };
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="BottomTabNavigator"
+          component={BottomTabNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="PostDetail" component={PostDetail} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

@@ -2,13 +2,13 @@ import * as React from "react";
 import MainContainer from "./navigation/mainContainer";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
 import {
   Firestore,
   getFirestore,
   collection,
   addDoc,
 } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
@@ -23,6 +23,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 // console.log(db instanceof Firestore);
 
 function App() {
@@ -30,4 +31,4 @@ function App() {
 }
 
 export default App;
-export { db };
+export { db, storage };

@@ -9,8 +9,8 @@ import {
 } from "firebase/firestore";
 import { createRecyclePlans } from "./recyclePlans-db";
 
-export const createPlan = async (userId, data) => {
-  const todosCollectionRef = collection(db, "users", userId, "todos");
+export const createPlan = async (data) => {
+  const todosCollectionRef = collection(db, "todos");
   await addDoc(todosCollectionRef, {
     data,
   }).then((result) => {
@@ -23,17 +23,22 @@ export const createPlan = async (userId, data) => {
 export const getPlans = async (userId) => {
   const result = [];
 
-  const todosCollectionRef = collection(db, "users", userId, "todos");
+  const todosCollectionRef = collection(db, "todos");
 
-  await getDocs(todosCollectionRef).then((todos) =>
-    todos.forEach((todo) => {
+  await getDocs(todosCollectionRef).then((todos) => {
+    if (todos.empty) return; // If no posts found, return early
+
+    const filtered = todos.docs.filter((todo) => {
+      return todo.data().data.userId === userId;
+    });
+
+    filtered.forEach((todo) => {
       result.push({
         id: todo.id,
         ...todo.data(),
       });
-    })
-  );
-
+    });
+  });
   const convertDay = (dateString) => {
     const sides = dateString.split(",");
     dateString = sides[0];
@@ -122,16 +127,16 @@ export const getPlans = async (userId) => {
   return filteredTodos;
 };
 
-export const updateTodo = async (todoId, data) => {
-  const todoRef = doc(db, "users", userId, "todos", todoId);
+// export const updateTodo = async (todoId, data) => {
+//   const todoRef = doc(db, "users", userId, "todos", todoId);
 
-  await updateDoc(todoRef, data).then(() => {
-    console.log("Todo updated");
-  });
-};
+//   await updateDoc(todoRef, data).then(() => {
+//     console.log("Todo updated");
+//   });
+// };
 
-export const deleteTodo = async (userId, todoId) => {
-  const todoRef = doc(db, "users", userId, "todos", todoId);
+export const deleteTodo = async (todoId) => {
+  const todoRef = doc(db, "todos", todoId);
 
   await deleteDoc(todoRef).then(() => {
     console.log("Todo deleted");

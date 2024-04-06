@@ -55,11 +55,12 @@ const Plan = ({ visible, onClose }) => {
         endTime: endTime.toLocaleString(),
         alarmReminder: alarmReminder,
         tag: tag,
+        userId: userId,
       };
 
       console.log(data.startTime);
 
-      const planId = await createPlan(userId, data);
+      const planId = await createPlan(data);
 
       onClose();
     } catch (error) {

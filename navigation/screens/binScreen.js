@@ -70,7 +70,7 @@ export default function BinScreen() {
   };
 
   const handleDelete = async (id) => {
-    await deleteRecycle(userId, id);
+    await deleteRecycle(id);
     await getRePlans();
   };
 

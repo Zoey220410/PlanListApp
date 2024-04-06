@@ -8,8 +8,8 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-export const createRecyclePlans = async (userId, data) => {
-  const todosCollectionRef = collection(db, "users", userId, "bin");
+export const createRecyclePlans = async (data) => {
+  const todosCollectionRef = collection(db, "bin");
   await addDoc(todosCollectionRef, {
     data,
   }).then((result) => {
@@ -22,16 +22,22 @@ export const createRecyclePlans = async (userId, data) => {
 export const getRecyclePlans = async (userId) => {
   const result = [];
 
-  const todosCollectionRef = collection(db, "users", userId, "bin");
+  const todosCollectionRef = collection(db, "bin");
 
-  await getDocs(todosCollectionRef).then((todos) =>
-    todos.forEach((todo) => {
+  await getDocs(todosCollectionRef).then((todos) => {
+    if (todos.empty) return; // If no posts found, return early
+
+    const filtered = todos.docs.filter((todo) => {
+      return todo.data().data.userId === userId;
+    });
+
+    filtered.forEach((todo) => {
       result.push({
         id: todo.id,
         ...todo.data(),
       });
-    })
-  );
+    });
+  });
 
   const convertDate = (dateString) => {
     const sides = dateString.split(",");
@@ -65,9 +71,9 @@ export const getRecyclePlans = async (userId) => {
   return result;
 };
 
-export const deleteRecycle = async (userId, todoId) => {
+export const deleteRecycle = async (todoId) => {
   console.log(todoId);
-  const todoRef = doc(db, "users", userId, "bin", todoId);
+  const todoRef = doc(db, "bin", todoId);
 
   await deleteDoc(todoRef).then(() => {
     console.log("Recycle plan deleted");

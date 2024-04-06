@@ -78,7 +78,7 @@ export default function PlanScreen() {
   };
 
   const handleDelete = async (id) => {
-    await deleteTodo(userId, id);
+    await deleteTodo(id);
     await getTodos();
   };
 
@@ -86,9 +86,10 @@ export default function PlanScreen() {
     const deletedPlan = plans.filter((plan) => {
       return plan.id === id;
     });
+    console.log(deletedPlan);
 
-    await createRecyclePlans(userId, deletedPlan[0].data);
-    await deleteTodo(userId, id);
+    await createRecyclePlans(deletedPlan[0].data);
+    await deleteTodo(id);
     await getTodos();
   };
 

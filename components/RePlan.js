@@ -58,10 +58,11 @@ const RePlan = ({ visible, onClose, reAddId, newplan }) => {
         endTime: endTime.toLocaleString(),
         alarmReminder: alarmReminder,
         tag: tag,
+        userId: userId,
       };
 
-      await createPlan(userId, data);
-      await deleteRecycle(userId, reAddId);
+      await createPlan(data);
+      await deleteRecycle(reAddId);
 
       onClose();
     } catch (err) {
