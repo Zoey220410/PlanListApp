@@ -7,25 +7,27 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import { TextInput, List, Button } from "react-native-paper";
+import { TextInput, List, Button, IconButton } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
 import { updateSharing } from "../../firebase-backend/post-db";
 
 const PostDetail = () => {
   const userId = "1";
   const route = useRoute();
   const { postInfo } = route.params;
+  const [info, setInfo] = useState(postInfo);
   const [review, setReview] = useState("");
-  console.log(postInfo);
+  const [heartColor, setHeartColor] = useState(
+    info.likeByUsers && info.likeByUsers.includes(userId) ? "pink" : "grey"
+  );
 
   const handleAdd = async () => {
     if (review.trim() === "") return;
     try {
-      const newpost = postInfo;
+      const newpost = info;
       const reviewInfo = { content: review, userId: userId };
       newpost.reviews.push(reviewInfo);
-      console.log(newpost);
+      setInfo(newpost);
       await updateSharing(newpost);
       setReview("");
     } catch (error) {
@@ -33,23 +35,56 @@ const PostDetail = () => {
     }
   };
 
+  const handlePress = async (userId) => {
+    // Check if the user has already liked the post
+    const newpost = info;
+    const isLiked = newpost.likeByUsers && newpost.likeByUsers.includes(userId);
+
+    if (isLiked) {
+      // Unlike the post
+      newpost.likes -= 1;
+      // Remove userId from likeByUsers array
+      newpost.likeByUsers = newpost.likeByUsers.filter((id) => id !== userId);
+      heart = "grey";
+    } else {
+      // Like the post
+      newpost.likes += 1;
+      // Add userId to likeByUsers array
+      newpost.likeByUsers.push(userId);
+      heart = "pink";
+    }
+
+    // Update state variables
+    setHeartColor(heart);
+    setInfo(newpost);
+    await updateSharing(newpost);
+  };
+
   return (
     <ScrollView>
       <View style={styles.containerStyle}>
         <View style={{ height: "auto" }}>
-          {postInfo.imageUrl && (
+          {info.imageUrl && (
             <Image
-              source={{ uri: postInfo.imageUrl }}
+              source={{ uri: info.imageUrl }}
               style={{ width: 350, height: 350 }}
             />
           )}
           <List.Section>
-            <List.Subheader style={styles.text}>
-              {postInfo.title}
-            </List.Subheader>
-            <List.Item title={postInfo.content} />
+            <List.Subheader style={styles.text}>{info.title}</List.Subheader>
+            <List.Item title={info.content} />
           </List.Section>
         </View>
+        <View style={styles.likes}>
+          <IconButton
+            icon="heart"
+            size={20}
+            onPress={() => handlePress(userId)}
+            iconColor={heartColor}
+          />
+          <Text>{info.likes}</Text>
+        </View>
+
         <View style={styles.reviewInput}>
           <TextInput
             label="Write your comments"
@@ -65,9 +100,9 @@ const PostDetail = () => {
 
         <List.Section style={styles.reviewLayout}>
           <List.Subheader style={styles.reviews}>
-            {postInfo.reviews.length} Comments
+            {info.reviews.length} Comments
           </List.Subheader>
-          {postInfo.reviews.map((item, index) => (
+          {info.reviews.map((item, index) => (
             <List.Item
               key={index}
               title={item.userId}
@@ -130,6 +165,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: "auto",
+  },
+  likes: {
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
 });
 

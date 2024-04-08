@@ -17,12 +17,10 @@ import { deleteRecycle } from "../firebase-backend/recyclePlans-db";
 
 const RePlan = ({ visible, onClose, reAddId, newplan }) => {
   const [plan, setPlan] = useState(null);
-  const [planDate, setPlanDate] = useState("");
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [alarmReminder, setAlarmReminder] = useState(false);
   const [tag, setTag] = useState("other");
-  const [importanceLevel, setImportanceLevel] = useState("");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [activeButton, setActiveButton] = useState(0);

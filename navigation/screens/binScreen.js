@@ -39,6 +39,8 @@ export default function BinScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [bin, setBin] = useState([]);
   const [newPlan, setNewPlan] = useState(null);
+  const [tag, setTag] = useState(null);
+  const [alarmReminder, setAlarmReminder] = useState(null);
   const [reAddId, setReAddId] = useState(null);
 
   useFocusEffect(
@@ -50,12 +52,6 @@ export default function BinScreen() {
   useEffect(() => {
     getRePlans();
   }, [modalVisible]);
-
-  useEffect(() => {
-    if (newPlan != null) {
-      setModalVisible(true);
-    }
-  }, [newPlan]);
 
   const userId = "1";
 
@@ -75,6 +71,7 @@ export default function BinScreen() {
   };
 
   const handleReAdd = (id) => {
+    console.log("hi");
     setReAddId(id);
     const readdPlan = bin.find((item) => {
       return item.id === id;
@@ -84,6 +81,7 @@ export default function BinScreen() {
     } else {
       console.log("No plan found with ID:", id);
     }
+    setModalVisible(true);
   };
 
   const handleModalClose = () => {

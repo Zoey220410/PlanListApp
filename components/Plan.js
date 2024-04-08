@@ -16,12 +16,10 @@ import { createPlan } from "../firebase-backend/plans-db";
 
 const Plan = ({ visible, onClose }) => {
   const [plan, setPlan] = useState("");
-  const [planDate, setPlanDate] = useState("");
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [alarmReminder, setAlarmReminder] = useState(false);
   const [tag, setTag] = useState("other");
-  const [importanceLevel, setImportanceLevel] = useState("");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [activeButton, setActiveButton] = useState(0);
@@ -37,14 +35,12 @@ const Plan = ({ visible, onClose }) => {
     const currentDate = selectedDate;
     setShow(false);
     setStartTime(currentDate);
-    console.log(startTime);
   };
 
   const onChange2 = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShow(false);
     setEndTime(currentDate);
-    console.log(endTime);
   };
 
   const handleSubmit = async () => {
@@ -58,9 +54,13 @@ const Plan = ({ visible, onClose }) => {
         userId: userId,
       };
 
-      console.log(data.startTime);
-
       const planId = await createPlan(data);
+      setPlan("");
+      setStartTime(new Date());
+      setEndTime(new Date());
+      setAlarmReminder(false);
+      setTag("other");
+      setActiveButton(4);
 
       onClose();
     } catch (error) {

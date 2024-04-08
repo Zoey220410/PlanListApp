@@ -17,7 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 const DiscoverScreen = () => {
   const [posts, setPosts] = useState([]);
   const [heartColors, setHeartColors] = useState(
-    posts ? Array(posts.length).fill("black") : null
+    posts ? Array(posts.length).fill("grey") : null
   );
   const [modalVisible, setModalVisible] = useState(false);
   const [updatePostIndex, setUpdatePostIndex] = useState(null);

@@ -24,6 +24,9 @@ const Post = ({ visible, onClose }) => {
       };
 
       const postId = await createSharing(userId, data, image);
+      setContent("");
+      setTitle("");
+      setImage("");
 
       onClose();
     } catch (error) {

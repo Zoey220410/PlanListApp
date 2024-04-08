@@ -94,15 +94,14 @@ export const getSharing = async (userId) => {
     if (
       !a.postTime ||
       !b.postTime ||
-      typeof a.postTime !== "string" ||
-      typeof b.postTime !== "string"
+      !(a.postTime.toDate() instanceof Date) ||
+      !(b.postTime.toDate() instanceof Date)
     ) {
       return 0;
     }
-    const postTimeA = a.postTime.getTime();
-    const postTimeB = b.postTime.getTime();
+    console.log(a.postTime);
 
-    return postTimeA - postTimeB;
+    return b.postTime.toDate() - a.postTime.toDate();
   });
 
   return result;
