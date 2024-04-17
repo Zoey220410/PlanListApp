@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { IconButton } from "react-native-paper";
+import { IconButton, Button } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
+// import LazyloadView from "react-native-lazyload";
 import Post from "../../components/Post";
 import { getSharing, updateSharing } from "../../firebase-backend/post-db";
 import { useNavigation } from "@react-navigation/native";
@@ -21,13 +22,14 @@ const DiscoverScreen = () => {
   );
   const [modalVisible, setModalVisible] = useState(false);
   const [updatePostIndex, setUpdatePostIndex] = useState(null);
+  const [personal, setPersonal] = useState(false);
 
   const userId = "1";
 
   useFocusEffect(
     React.useCallback(() => {
       getPosts(userId);
-    }, [])
+    }, [personal])
   );
 
   useEffect(() => {
@@ -37,12 +39,19 @@ const DiscoverScreen = () => {
   const getPosts = async (userId) => {
     try {
       const postData = await getSharing(userId);
-      const initialHeartColors = postData.map((post) =>
+      let filteredPost = [];
+      if (!personal) {
+        filteredPost = postData.filter((data) => data.privacy !== "Private");
+      } else {
+        filteredPost = postData.filter((data) => data.userId === userId);
+      }
+
+      const initialHeartColors = filteredPost.map((post) =>
         post.likeByUsers && post.likeByUsers.includes(userId) ? "pink" : "grey"
       );
       setHeartColors(initialHeartColors);
 
-      setPosts(postData);
+      setPosts(filteredPost);
     } catch (error) {
       console.error("Error fetching posts:", error);
       alert("Failed to fetch posts");
@@ -108,10 +117,17 @@ const DiscoverScreen = () => {
     navigation.navigate("PostDetail", { postInfo: posts[index] }); // navigate to OtherScreen
   };
 
+  const handlePersonal = () => {
+    setPersonal(!personal);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headTitle}>
         <Text style={styles.text}>Dicover</Text>
+        <Button mode="contained" disabled={false} onPress={handlePersonal}>
+          <Text>{personal ? "Turn to Public" : "Turn to Personal"}</Text>
+        </Button>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
@@ -130,7 +146,15 @@ const DiscoverScreen = () => {
             style={styles.postCard}
             onPress={() => handlePostPress(index)}
           >
-            <Image style={styles.postImage} source={{ uri: item.imageUrl }} />
+            {item.imageUrl === "" ? null : (
+              // <LazyloadView style={{ flex: 1 }}>
+              <Image
+                style={styles.postImage}
+                source={{ uri: item.imageUrl }}
+                loading="lazy"
+              />
+              // </LazyloadView>
+            )}
             <View style={styles.postContent}>
               <Text style={styles.postTitle}>{item.title}</Text>
               <Text style={styles.content}>{item.content}</Text>

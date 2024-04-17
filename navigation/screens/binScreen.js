@@ -18,23 +18,6 @@ import {
 } from "../../firebase-backend/recyclePlans-db";
 import { useFocusEffect } from "@react-navigation/native";
 
-let testData = [
-  {
-    plan: "Pre",
-    startTime: "3/21/2024, 22:36:47",
-    endTime: "3/21/2024, 22:36:47",
-    tag: "Work",
-    alarmReminder: true,
-  },
-  {
-    plan: "Moudule 1",
-    startTime: "3/25/2024, 22:36:47",
-    endTime: "3/25/2024, 22:36:47",
-    tag: "Study",
-    alarmReminder: true,
-  },
-];
-
 export default function BinScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [bin, setBin] = useState([]);
@@ -108,8 +91,12 @@ export default function BinScreen() {
             <ReTask
               key={item.id}
               plan={item.data.plan}
-              startTime={item.data.startTime}
-              endTime={item.data.endTime}
+              startTime={new Date(
+                item.data.startTime.seconds * 1000
+              ).toLocaleString()}
+              endTime={new Date(
+                item.data.endTime.seconds * 1000
+              ).toLocaleString()}
               tag={item.data.tag}
               alarmReminder={item.data.alarmReminder}
               planId={item.id}

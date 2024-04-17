@@ -39,33 +39,24 @@ export const getRecyclePlans = async (userId) => {
     });
   });
 
-  const convertDate = (dateString) => {
-    const sides = dateString.split(",");
-    dateString = sides[0];
-    const parts = dateString.split("/");
-    if (parts.length === 3) {
-      const month = parseInt(parts[0], 10) - 1;
-      const day = parseInt(parts[1], 10);
-      const year = parseInt(parts[2], 10);
-      return new Date(year, month, day);
-    } else {
-      return null;
-    }
-  };
+  result.forEach((item) => {
+    const startDate = new Date(item.data.startTime.seconds * 1000);
+    const endDate = new Date(item.data.endTime.seconds * 1000);
+    item.startDate = startDate;
+    item.endDate = endDate;
+  });
 
   result.sort((a, b) => {
     if (
-      !a.startTime ||
-      !b.startTime ||
-      typeof a.startTime !== "string" ||
-      typeof b.startTime !== "string"
+      !a.startDate ||
+      !b.startDate ||
+      !(a.startDate instanceof Date) ||
+      !(b.startDate instanceof Date)
     ) {
       return 0;
     }
-    const startTimeA = convertDate(a.startTime).getTime();
-    const startTimeB = convertDate(b.startTime).getTime();
 
-    return startTimeA - startTimeB;
+    return b.startDate - a.startDate;
   });
 
   return result;

@@ -45,10 +45,20 @@ const Plan = ({ visible, onClose }) => {
 
   const handleSubmit = async () => {
     try {
+      if (plan.trim() === "") {
+        alert("Please input a plan.");
+        return;
+      }
+
+      if (endTime <= startTime) {
+        alert("Invalid Time.");
+        return;
+      }
+
       data = {
         plan: plan,
-        startTime: startTime.toLocaleString(),
-        endTime: endTime.toLocaleString(),
+        startTime: startTime,
+        endTime: endTime,
         alarmReminder: alarmReminder,
         tag: tag,
         userId: userId,

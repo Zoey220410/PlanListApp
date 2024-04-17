@@ -52,8 +52,8 @@ const RePlan = ({ visible, onClose, reAddId, newplan }) => {
     try {
       data = {
         plan: plan,
-        startTime: startTime.toLocaleString(),
-        endTime: endTime.toLocaleString(),
+        startTime: startTime,
+        endTime: endTime,
         alarmReminder: alarmReminder,
         tag: tag,
         userId: userId,

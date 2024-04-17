@@ -17,8 +17,12 @@ import {
 
 export const createSharing = async (userId, postData, imageUri) => {
   try {
+    let downloadUrl = "";
     const imageName = postData.postTime;
-    const { downloadUrl } = await uploadToFirebase(imageUri, imageName);
+    if (imageUri !== "") {
+      const { downloadUrl: url } = await uploadToFirebase(imageUri, imageName);
+      downloadUrl = url;
+    }
 
     const postsCollectionRef = collection(db, "posts");
     const docRef = await addDoc(postsCollectionRef, {
@@ -99,7 +103,6 @@ export const getSharing = async (userId) => {
     ) {
       return 0;
     }
-    console.log(a.postTime);
 
     return b.postTime.toDate() - a.postTime.toDate();
   });

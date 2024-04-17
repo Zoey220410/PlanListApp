@@ -39,42 +39,13 @@ export const getPlans = async (userId) => {
       });
     });
   });
-  const convertDay = (dateString) => {
-    const sides = dateString.split(",");
-    dateString = sides[0];
-    const parts = dateString.split("/");
-    if (parts.length === 3) {
-      const month = parseInt(parts[0], 10) - 1;
-      const day = parseInt(parts[1], 10);
-      const year = parseInt(parts[2], 10);
-      return new Date(year, month, day);
-    } else {
-      return null;
-    }
-  };
 
-  const convertDate = (dateTimeString) => {
-    const sides = dateTimeString.split(",");
-    const datePart = sides[0];
-    const timePart = sides[1];
-
-    const dateParts = datePart.split("/");
-    const timeParts = timePart.split(":");
-
-    if (dateParts.length === 3 && timeParts.length === 3) {
-      const month = parseInt(dateParts[0], 10) - 1;
-      const day = parseInt(dateParts[1], 10);
-      const year = parseInt(dateParts[2], 10);
-
-      const hour = parseInt(timeParts[0], 10);
-      const minute = parseInt(timeParts[1], 10);
-      const second = parseInt(timeParts[2], 10);
-
-      return new Date(year, month, day, hour, minute, second);
-    } else {
-      return null;
-    }
-  };
+  result.forEach((item) => {
+    const startDate = new Date(item.data.startTime.seconds * 1000);
+    const endDate = new Date(item.data.endTime.seconds * 1000);
+    item.startDate = startDate;
+    item.endDate = endDate;
+  });
 
   const isBeforeDay = (parsedDateA, parsedDateB) => {
     if (!parsedDateA || !parsedDateB) {
@@ -98,12 +69,12 @@ export const getPlans = async (userId) => {
   const filteredTodos = [];
 
   for (const todo of result) {
-    planDate = convertDay(todo.data.endTime);
+    planDate = todo.endDate;
     const currentDate = new Date();
 
     if (isBeforeDay(planDate, currentDate)) {
-      await createRecyclePlans(userId, todo.data);
-      await deleteTodo(userId, todo.id);
+      await createRecyclePlans(todo.data);
+      await deleteTodo(todo.id);
     } else {
       filteredTodos.push(todo);
     }
@@ -111,17 +82,15 @@ export const getPlans = async (userId) => {
 
   filteredTodos.sort((a, b) => {
     if (
-      !a.startTime ||
-      !b.startTime ||
-      typeof a.startTime !== "string" ||
-      typeof b.startTime !== "string"
+      !a.startDate ||
+      !b.startDate ||
+      !(a.startDate instanceof Date) ||
+      !(b.startDate instanceof Date)
     ) {
       return 0;
     }
-    const startTimeA = convertDate(a.startTime).getTime();
-    const startTimeB = convertDate(b.startTime).getTime();
 
-    return startTimeA - startTimeB;
+    return a.startDate - b.startDate;
   });
 
   return filteredTodos;

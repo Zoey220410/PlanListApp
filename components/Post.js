@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, Modal, View, Image } from "react-native";
+import { StyleSheet, Text, Modal, View, Image, ScrollView } from "react-native";
 import { TextInput, List, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { createSharing } from "../firebase-backend/post-db";
@@ -8,14 +8,25 @@ const Post = ({ visible, onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState("");
+  const [activeButton, setActiveButton] = useState(0);
+  const [privacy, setPrivacy] = useState(null);
 
   const userId = "1";
 
   const handleSubmit = async () => {
+    if (content.trim() == "" || title.trim() == "") {
+      alert("Invalid Input.");
+      return;
+    }
+    if (privacy == null) {
+      alert("Choose post visiability.");
+      return;
+    }
     try {
       data = {
         title: title,
         content: content,
+        privacy: privacy,
         postTime: new Date(),
         likes: 0,
         reviews: [],
@@ -27,6 +38,8 @@ const Post = ({ visible, onClose }) => {
       setContent("");
       setTitle("");
       setImage("");
+      setPrivacy(null);
+      setActiveButton(0);
 
       onClose();
     } catch (error) {
@@ -34,6 +47,15 @@ const Post = ({ visible, onClose }) => {
     }
   };
 
+  const handleClose = () => {
+    setContent("");
+    setTitle("");
+    setImage("");
+    setActiveButton(0);
+    setPrivacy(null);
+    setActiveButton(0);
+    onClose();
+  };
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -48,11 +70,39 @@ const Post = ({ visible, onClose }) => {
     }
   };
 
+  const handleButtonPress = (buttonId) => {
+    const privacy = ["Private", "Public"];
+    setActiveButton(buttonId);
+    setPrivacy(privacy[buttonId - 1]);
+  };
+
   return (
     <Modal visible={visible} onRequestClose={onClose} animationType="slide">
       <View style={styles.containerStyle}>
         <View style={styles.headTitle}>
           <Text style={styles.text}>Create Your Post</Text>
+        </View>
+        <View
+          style={{
+            width: "50%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            mode="contained"
+            onPress={() => handleButtonPress(1)}
+            disabled={activeButton === 1}
+          >
+            <Text>Private</Text>
+          </Button>
+          <Button
+            mode="contained"
+            onPress={() => handleButtonPress(2)}
+            disabled={activeButton === 2}
+          >
+            <Text>Public</Text>
+          </Button>
         </View>
         <TextInput
           style={styles.input}
@@ -82,7 +132,7 @@ const Post = ({ visible, onClose }) => {
           <Button onPress={handleSubmit} mode="outlined">
             <Text>Submit</Text>
           </Button>
-          <Button onPress={onClose} mode="outlined">
+          <Button onPress={handleClose} mode="outlined">
             <Text>Back</Text>
           </Button>
         </View>
@@ -104,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headTitle: {
-    height: "20%",
+    height: 200,
     width: "100%",
     backgroundColor: "#FFC0CB",
     mixBlendMode: "multiply",

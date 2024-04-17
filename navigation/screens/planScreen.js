@@ -3,14 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
   Keyboard,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Clipboa,
 } from "react-native";
+// import PushNotification from "react-native-push-notification";
 import Task from "../../components/Task";
 import Plan from "../../components/Plan";
 import { getPlans } from "../../firebase-backend/plans-db";
@@ -18,30 +15,6 @@ import { deleteTodo } from "../../firebase-backend/plans-db";
 import { Button } from "react-native-paper";
 import { createRecyclePlans } from "../../firebase-backend/recyclePlans-db";
 import { useFocusEffect } from "@react-navigation/native";
-
-let testData = [
-  {
-    plan: "Meeting",
-    startTime: "3/27/2024, 22:36:47",
-    endTime: "3/27/2024, 22:36:47",
-    tag: "Work",
-    alarmReminder: true,
-  },
-  {
-    plan: "HW",
-    startTime: "3/27/2024, 22:36:47",
-    endTime: "3/27/2024, 22:36:47",
-    tag: "Study",
-    alarmReminder: true,
-  },
-  {
-    plan: "Market",
-    startTime: "3/27/2024, 22:36:47",
-    endTime: "3/27/2024, 22:36:47",
-    tag: "Life",
-    alarmReminder: true,
-  },
-];
 
 export default function PlanScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -59,6 +32,28 @@ export default function PlanScreen() {
   useEffect(() => {
     getTodos();
   }, [modalVisible, choice]);
+
+  // const scheduleNotifications = (plans) => {
+  //   plans.forEach((plan) => {
+  //     const key = plan.startDate.toString(); // Key must be unique everytime
+  //     PushNotification.createChannel(
+  //       {
+  //         channelId: key, // (required)
+  //         channelName: "Local messasge", // (required)
+  //       },
+  //       (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+  //     );
+  //     PushNotification.localNotification({
+  //       channelId: key, //this must be same with channelid in createchannel
+  //       title: "Local Message",
+  //       message: "Local message !!",
+  //     });
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   scheduleNotifications(plans);
+  // }, [plans]);
 
   const getTodos = async () => {
     try {
@@ -186,8 +181,12 @@ export default function PlanScreen() {
             <Task
               key={item.id}
               plan={item.data.plan}
-              startTime={item.data.startTime}
-              endTime={item.data.endTime}
+              startTime={new Date(
+                item.data.startTime.seconds * 1000
+              ).toLocaleString()}
+              endTime={new Date(
+                item.data.endTime.seconds * 1000
+              ).toLocaleString()}
               tag={item.data.tag}
               alarmReminder={item.data.alarmReminder}
               planId={item.id}
