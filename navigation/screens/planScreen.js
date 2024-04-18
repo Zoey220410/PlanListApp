@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -15,12 +15,49 @@ import { deleteTodo } from "../../firebase-backend/plans-db";
 import { Button } from "react-native-paper";
 import { createRecyclePlans } from "../../firebase-backend/recyclePlans-db";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import { Platform } from "react-native";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+async function sendPushNotification(startDate, plan, tag) {
+  if (startDate < new Date()) return;
+  time = startDate.getTime() - new Date().getTime();
+
+  const message = {
+    sound: "default",
+    title: tag,
+    body: plan,
+    data: { someData: "goes here" },
+  };
+
+  let receiptID = await Notifications.scheduleNotificationAsync({
+    content: {
+      to: "",
+      title: message.title,
+      body: message.body,
+    },
+    trigger: { seconds: time / 1000 },
+  });
+}
 
 export default function PlanScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [plans, setPlans] = useState([]);
   const [activeButton, setActiveButton] = useState(0);
   const [choice, setChoice] = useState("All");
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(null);
+  const notificationListener = useRef();
+  const responseListener = useRef();
   const userId = "1";
 
   useFocusEffect(
@@ -32,28 +69,6 @@ export default function PlanScreen() {
   useEffect(() => {
     getTodos();
   }, [modalVisible, choice]);
-
-  // const scheduleNotifications = (plans) => {
-  //   plans.forEach((plan) => {
-  //     const key = plan.startDate.toString(); // Key must be unique everytime
-  //     PushNotification.createChannel(
-  //       {
-  //         channelId: key, // (required)
-  //         channelName: "Local messasge", // (required)
-  //       },
-  //       (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-  //     );
-  //     PushNotification.localNotification({
-  //       channelId: key, //this must be same with channelid in createchannel
-  //       title: "Local Message",
-  //       message: "Local message !!",
-  //     });
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   scheduleNotifications(plans);
-  // }, [plans]);
 
   const getTodos = async () => {
     try {
@@ -71,6 +86,33 @@ export default function PlanScreen() {
       alert("Failed to fetch plans");
     }
   };
+
+  useEffect(() => {
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    plans.map((item) => {
+      sendPushNotification(item.startDate, item.data.plan, item.data.tag);
+    });
+  }, [plans]);
 
   const handleDelete = async (id) => {
     await deleteTodo(id);
