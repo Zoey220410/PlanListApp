@@ -8,7 +8,6 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { createRecyclePlans } from "./recyclePlans-db";
-
 export const createPlan = async (data) => {
   const todosCollectionRef = collection(db, "todos");
   await addDoc(todosCollectionRef, {

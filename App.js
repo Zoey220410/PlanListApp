@@ -1,6 +1,7 @@
 import * as React from "react";
 import MainContainer from "./navigation/mainContainer";
 import { initializeApp } from "firebase/app";
+// import { vexo } from "vexo-analytics";
 import { getAuth } from "firebase/auth";
 import {
   Firestore,
@@ -9,6 +10,8 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+
+// vexo("25cd0f3b-92fb-433a-b6f2-c2538813e080");
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
@@ -24,6 +27,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+
 // console.log(db instanceof Firestore);
 
 function App() {

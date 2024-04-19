@@ -19,6 +19,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
+import { getWeather } from "../../firebase-backend/weatherController";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -28,8 +29,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
-async function sendPushNotification(startDate, plan, tag) {
-  if (startDate < new Date()) return;
+async function sendPushNotification(startDate, plan, tag, alarmReminder) {
+  if (startDate < new Date() || !alarmReminder) return;
   time = startDate.getTime() - new Date().getTime();
 
   const message = {
@@ -56,15 +57,27 @@ export default function PlanScreen() {
   const [choice, setChoice] = useState("All");
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(null);
+  const [weather, setWeather] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
   const userId = "1";
 
   useFocusEffect(
     React.useCallback(() => {
+      fetchWeatherData();
       getTodos();
     }, [])
   );
+
+  const fetchWeatherData = async () => {
+    try {
+      const weatherData = await getWeather(33, 84);
+      setWeather(weatherData.main.temp);
+      console.log(weatherData);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    }
+  };
 
   useEffect(() => {
     getTodos();
@@ -110,7 +123,12 @@ export default function PlanScreen() {
 
   useEffect(() => {
     plans.map((item) => {
-      sendPushNotification(item.startDate, item.data.plan, item.data.tag);
+      sendPushNotification(
+        item.startDate,
+        item.data.plan,
+        item.data.tag,
+        item.data.alarmReminder
+      );
     });
   }, [plans]);
 
@@ -144,6 +162,7 @@ export default function PlanScreen() {
     <View style={styles.container}>
       <View style={styles.headTitle}>
         <Text style={styles.text}>Plans Today</Text>
+        <Text>T: {weather}</Text>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
@@ -311,8 +330,8 @@ const styles = StyleSheet.create({
     flex: 0.2,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: "10%",
-    margin: "5%",
+    gap: "5%",
+    margin: "2%",
     justifyContent: "center",
     alignItems: "center",
   },
