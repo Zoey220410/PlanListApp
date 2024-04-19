@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,13 @@ import {
 import { TextInput, List, Button, IconButton } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 import { updateSharing } from "../../firebase-backend/post-db";
+import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 
 const PostDetail = () => {
-  const userId = "1";
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
+  const userId = user ? user.uid : "";
   const route = useRoute();
   const { postInfo } = route.params;
   const [info, setInfo] = useState(postInfo);

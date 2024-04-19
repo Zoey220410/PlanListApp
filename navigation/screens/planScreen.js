@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -20,6 +20,7 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { getWeather } from "../../firebase-backend/weatherController";
+import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -60,11 +61,16 @@ export default function PlanScreen() {
   const [weather, setWeather] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
-  const userId = "1";
+  const [userId, setUserId] = useState("");
+
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
 
   useFocusEffect(
     React.useCallback(() => {
       fetchWeatherData();
+      setUserId(user ? user.uid : "");
       getTodos();
     }, [])
   );
@@ -73,7 +79,6 @@ export default function PlanScreen() {
     try {
       const weatherData = await getWeather(33, 84);
       setWeather(weatherData.main.temp);
-      console.log(weatherData);
     } catch (error) {
       console.error("Error fetching weather data:", error);
     }

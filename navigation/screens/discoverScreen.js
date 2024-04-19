@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -14,6 +14,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import Post from "../../components/Post";
 import { getSharing, updateSharing } from "../../firebase-backend/post-db";
 import { useNavigation } from "@react-navigation/native";
+import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 
 const DiscoverScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -23,11 +24,15 @@ const DiscoverScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [updatePostIndex, setUpdatePostIndex] = useState(null);
   const [personal, setPersonal] = useState(false);
+  const [userId, setUserId] = useState("");
 
-  const userId = "1";
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
 
   useFocusEffect(
     React.useCallback(() => {
+      setUserId(user ? user.uid : "");
       getPosts(userId);
     }, [personal])
   );
@@ -38,12 +43,14 @@ const DiscoverScreen = () => {
 
   const getPosts = async (userId) => {
     try {
-      const postData = await getSharing(userId);
+      let postData;
       let filteredPost = [];
+      if (!user) return [];
       if (!personal) {
+        postData = await getSharing("all");
         filteredPost = postData.filter((data) => data.privacy !== "Private");
       } else {
-        filteredPost = postData.filter((data) => data.userId === userId);
+        filteredPost = await getSharing(userId);
       }
 
       const initialHeartColors = filteredPost.map((post) =>

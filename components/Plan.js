@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,7 @@ import { Picker } from "@react-native-picker/picker";
 import { TextInput, List, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { createPlan } from "../firebase-backend/plans-db";
+import { AuthenticatedUserContext } from "../Context/AuthenticationContext";
 
 const Plan = ({ visible, onClose }) => {
   const [plan, setPlan] = useState("");
@@ -23,7 +24,10 @@ const Plan = ({ visible, onClose }) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [activeButton, setActiveButton] = useState(0);
-  const userId = "1";
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
+  const userId = user ? user.uid : "";
 
   const handleButtonPress = (buttonId) => {
     const tags = ["Work", "Study", "Entertainment", "Life", "Other"];

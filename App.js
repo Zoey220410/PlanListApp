@@ -5,6 +5,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import AuthenticatedUserProvider from "./Context/AuthenticationContext";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
@@ -20,16 +22,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
 
 // console.log(db instanceof Firestore);
 
 function App() {
-    return (
-       <AuthenticatedUserProvider>
-          <MainContainer />
-       </AuthenticatedUserProvider>
-    );
+  return (
+    <AuthenticatedUserProvider>
+      <MainContainer />
+    </AuthenticatedUserProvider>
+  );
 }
 
 export default App;
-export { db };
+export { db, storage, auth };

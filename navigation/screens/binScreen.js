@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,7 @@ import {
   getRecyclePlans,
 } from "../../firebase-backend/recyclePlans-db";
 import { useFocusEffect } from "@react-navigation/native";
+import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 
 export default function BinScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,6 +26,7 @@ export default function BinScreen() {
   const [tag, setTag] = useState(null);
   const [alarmReminder, setAlarmReminder] = useState(null);
   const [reAddId, setReAddId] = useState(null);
+  const [userId, setUserId] = useState("");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -36,10 +38,13 @@ export default function BinScreen() {
     getRePlans();
   }, [modalVisible]);
 
-  const userId = "1";
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
 
   const getRePlans = async () => {
     try {
+      setUserId(user ? user.uid : "");
       const binPlans = await getRecyclePlans(userId);
       setBin(binPlans);
     } catch (error) {

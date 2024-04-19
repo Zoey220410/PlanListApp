@@ -20,6 +20,7 @@ export const createPlan = async (data) => {
 };
 
 export const getPlans = async (userId) => {
+  if (userId == null) return null;
   const result = [];
 
   const todosCollectionRef = collection(db, "todos");

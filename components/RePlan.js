@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,7 @@ import { TextInput, List, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { createPlan } from "../firebase-backend/plans-db";
 import { deleteRecycle } from "../firebase-backend/recyclePlans-db";
+import { AuthenticatedUserContext } from "../Context/AuthenticationContext";
 
 const RePlan = ({ visible, onClose, reAddId, newplan }) => {
   const [plan, setPlan] = useState(null);
@@ -24,7 +25,10 @@ const RePlan = ({ visible, onClose, reAddId, newplan }) => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [activeButton, setActiveButton] = useState(0);
-  const userId = "1";
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
+  const userId = user ? user.uid : "";
 
   useEffect(() => {
     setPlan(newplan);

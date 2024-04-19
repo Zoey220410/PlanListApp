@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, Modal, View, Image, ScrollView } from "react-native";
 import { TextInput, List, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { createSharing } from "../firebase-backend/post-db";
+import { AuthenticatedUserContext } from "../Context/AuthenticationContext";
 
 const Post = ({ visible, onClose }) => {
   const [title, setTitle] = useState("");
@@ -11,7 +12,10 @@ const Post = ({ visible, onClose }) => {
   const [activeButton, setActiveButton] = useState(0);
   const [privacy, setPrivacy] = useState(null);
 
-  const userId = "1";
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
+  const userId = user ? user.uid : "";
 
   const handleSubmit = async () => {
     if (content.trim() == "" || title.trim() == "") {

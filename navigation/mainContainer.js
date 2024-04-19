@@ -3,11 +3,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import LoginScreen from "./screens/LoginScreen";
-import SignupScreen from "./screens/SignupScreen";
-import PersonInfo from "./screens/PersonInfo";
-import AddFriend from "./screens/AddFriend";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 //Screens
 import PlanScreen from "./screens/planScreen";
@@ -15,17 +10,23 @@ import BinScreen from "./screens/binScreen";
 import ProfileScreen from "./screens/profileScreen";
 import DiscoverScreen from "./screens/discoverScreen";
 
-//Screen names
-const planName = "Plans";
-const discoverName = "Discover";
-const binName = "Recycle Bin";
-const profileName = "Profile";
+import PostDetail from "./screens/PostDetail";
+import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/SignupScreen";
+import PersonInfo from "./screens/PersonInfo";
+import AddFriend from "./screens/AddFriend";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function MainContainer() {
-  return (
-    <NavigationContainer>
+  const planName = "Plans";
+  const binName = "Recycle Bin";
+  const discoverName = "Discover";
+  const profileName = "Profile";
+
+  const BottomTabNavigator = () => {
+    return (
       <Tab.Navigator
         initialRouteName={planName}
         screenOptions={({ route }) => ({
@@ -33,17 +34,16 @@ export default function MainContainer() {
             let iconName;
             let rn = route.name;
 
-              if (rn === planName) {
-                iconName = focused ? "home" : "home-outline";
-              } else if (rn === binName) {
-                iconName = "flower";
-              } else if (rn === discoverName) {
-                iconName = focused ? "list" : "list-outline";
-              } else if (rn === profileName) {
-                iconName = "person";
-              }
+            if (rn === planName) {
+              iconName = focused ? "home" : "home-outline";
+            } else if (rn === binName) {
+              iconName = "flower";
+            } else if (rn === discoverName) {
+              iconName = focused ? "list" : "list-outline";
+            } else if (rn === profileName) {
+              iconName = "person";
+            }
 
-            // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: "orange",
@@ -63,6 +63,23 @@ export default function MainContainer() {
         <Tab.Screen name={discoverName} component={DiscoverScreen} />
         <Tab.Screen name={profileName} component={ProfileScreen} />
       </Tab.Navigator>
+    );
+  };
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="BottomTabNavigator"
+          component={BottomTabNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="PostDetail" component={PostDetail} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="SignUp" component={SignupScreen} />
+        <Stack.Screen name="PersonInfo" component={PersonInfo} />
+        <Stack.Screen name="AddFriend" component={AddFriend} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

@@ -78,9 +78,16 @@ export const getSharing = async (userId) => {
     await getDocs(postsCollectionRef).then((posts) => {
       if (posts.empty) return; // If no posts found, return early
 
-      const filteredPosts = posts.docs.filter(
-        (post) => post.data().userId === userId
-      );
+      let filteredPosts;
+      console.log(userId);
+
+      if (userId === "all") {
+        filteredPosts = posts;
+      } else {
+        filteredPosts = posts.docs.filter(
+          (post) => post.data().userId === userId
+        );
+      }
 
       filteredPosts.forEach((post) => {
         result.push({
