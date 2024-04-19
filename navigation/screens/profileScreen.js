@@ -1,159 +1,206 @@
-//import * as React from 'react';
-//import { View, Text } from 'react-native';
-//
-//export default function ProfileScreen({ navigation }) {
-//    return (
-//        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//            <Text
-//                onPress={() => navigation.navigate('Plans')}
-//                style={{ fontSize: 26, fontWeight: 'bold' }}>Profile Screen</Text>
-//        </View>
-//    );
-//}
-import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-const backImage = require("../../assets/background_signin.jpg");
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  Image,
+  StatusBar,
+} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { signOut } from "firebase/auth";
+import { auth, db, userRef } from "../../App";
+import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-//import { signInWithEmailAndPassword } from "firebase/auth";
-//import { auth } from "../../firebase/config";
-//import { registerIndieID } from "native-notify";
-//import { processAuthError } from "../Utils";
+import * as ImagePicker from "expo-image-picker";
+import { ref, getStorage, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const LoginScreen = () => {
+const ProfileScreen = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  console.log("email = ", email);
+  const storage = getStorage();
+  const { user, setUser, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
 
-//  const onHandleLogin = () => {
-//    if (email !== "" && password !== "") {
-//      signInWithEmailAndPassword(auth, email, password)
-//        .then(() => registerIndieID(`${email}`, 6469, "zAbc4Qr227l0eSD1Cvpfo8"))
-//        .catch((error) => {
-//          processAuthError(error);
-//        });
-//    }
-//  };
+  const [username, setUsername] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userImageUrl, setUserImageUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const queryResult = query(userRef, where("email", "==", user.email));
+
+  async function DocFinder(queryResult) {
+    const querySnapshot = await getDocs(queryResult);
+    querySnapshot.forEach((doc) => {
+      if (username === "") {
+        const { username, email, profilePic } = doc.data();
+        setUsername(username);
+        setUserEmail(email);
+        setUserAvatarUrl(profilePic);
+        setUserImageUrl(profilePic);
+      }
+    });
+  }
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    // console.log(result);
+
+    if (!result.canceled) {
+      uploadImage(result.assets[0].uri);
+    }
+  };
+
+  const uploadImage = async (image) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(image);
+      // console.log("response = ", JSON.stringify(response));
+      const blob = await response.blob();
+      // console.log("blob = ", JSON.stringify(blob));
+      const filename = image.substring(image.lastIndexOf("/"));
+      // console.log("filename = ", filename);
+      const imageRef = ref(storage, `ProfilePictures/${filename}`);
+      uploadBytes(imageRef, blob).then(async () => {
+        const downloadUrl = await getDownloadURL(imageRef);
+        const querySnapshot = await getDocs(queryResult);
+        querySnapshot.forEach(async (document) => {
+          await updateDoc(doc(db, "Users", document.id), {
+            profilePic: downloadUrl,
+          }).then(() => {
+            setUserImageUrl(downloadUrl);
+            setUserAvatarUrl(downloadUrl);
+
+            setIsLoading(false);
+          });
+        });
+      });
+    } catch (error) {
+      Alert.alert(error.message);
+      setIsLoading(false);
+    }
+  };
+
+  // In case you're getting a response error while uploading your image
+  // use the uploadImage method below instead (don't forget to uncomment it)
+
+  // const uploadImage = async (image) => {
+  //   try {
+  //     setIsLoading(true);
+  //     const blob = await new Promise((resolve, reject)=>{
+  //       const xhr = new XMLHttpRequest()
+  //       xhr.onload = function () {
+  //         resolve(xhr.response)
+  //       }
+  //       xhr.onerror = function (e){
+  //         reject(new TypeError("Network request failed"))
+  //       }
+  //       xhr.responseType = 'blob'
+  //       xhr.open('GET', image, true)
+  //       xhr.send(null)
+  //     })
+  //     // console.log("blob = ", JSON.stringify(blob));
+  //     const filename = image.substring(image.lastIndexOf("/"));
+  //     // console.log("filename = ", filename);
+  //     const imageRef = ref(storage, `ProfilePictures/${filename}`);
+  //     uploadBytes(imageRef, blob).then(async () => {
+  //       const downloadUrl = await getDownloadURL(imageRef);
+  //       const querySnapshot = await getDocs(queryResult);
+  //       querySnapshot.forEach(async (document) => {
+  //         await updateDoc(doc(db, "Users", document.id), {
+  //           profilePic: downloadUrl,
+  //         }).then(() => {
+  //           setUserImageUrl(downloadUrl);
+  //           setUserAvatarUrl(downloadUrl);
+
+  //           setIsLoading(false);
+  //         });
+  //       });
+  //     });
+  //   } catch (error) {
+  //     Alert.alert(error.message);
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (!user) return;
+
+    DocFinder(queryResult);
+  }, [userImageUrl]);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+        navigation.navigate("Login");
+      })
+      .catch((error) => {
+        Alert.alert(error.message);
+      });
+  };
+
+  // console.log("user vatar =  ", userImageUrl);
+
   return (
-//    <KeyboardAwareScrollView className="bg-black">
-//     <View style={{ flex: 1, position: 'relative' }}>
-//          <View style={{
-//                       zIndex: 1
-//                      }}>
-//               <Image
-//                   source={backImage}
-//                   style={{ height: 320, width: '100%' }}
-//                   resizeMode="cover"
-//               />
-//          </View>
-//          <View style={{
-//                       backgroundColor: 'white',
-//                       height: '100%',
-//                       borderTopLeftRadius: 30,
-//                       borderTopRightRadius: 30,
-//                       zIndex: 1,
-//                     }}>
-//                <Text style={{
-//                          color: '#d60e45',
-//                          fontSize: 30,
-//                          fontWeight: 'bold',
-//                          textAlign: 'center',
-//                          paddingTop: 12,
-//                          marginTop: 12,
-//                        }}>
-//                              Sign in{" "}
-//                </Text>
-//          </View>
- <KeyboardAwareScrollView style={{ backgroundColor: 'white' }}>
-       <View style={{ flex: 1, position: 'relative' }}>
-               <View>
-                 <TextInput
-                   style={{
-                     letterSpacing: 2,
-                     backgroundColor: '#f3f3f3',
-                     borderRadius: 10,
-                     width: 360,
-                     fontSize: 20,
-                     paddingVertical: 8,
-                     paddingHorizontal: 4,
-                     marginHorizontal: 12,
-                     marginBottom: 20,
-                     zIndex: 999,
-                     top: 430,
-                   }}
-                   placeholder="Enter Email"
-                   keyboardType="email-address"
-                   autoCapitalize="none"
-                   textContentType="emailAddress"
-                   value={email}
-                   onChangeText={setEmail}
-                 />
-              </View>
-              <View>
-                  <TextInput
-                    style={{
-                      letterSpacing: 2,
-                      backgroundColor: '#f3f3f3',
-                      borderRadius: 10,
-                      width: 360,
-                      fontSize: 20,
-                      paddingVertical: 8,
-                      paddingHorizontal: 4,
-                      marginHorizontal: 12,
-                      marginBottom: 20,
-                      zIndex: 999,
-                      top: 450
-                    }}
-                    placeholder="Enter Password"
-                    secureTextEntry={true}
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    textContentType="password"
-                    value={password}
-                    onChangeText={setPassword}
-                  />
-              </View>
-
-               <View>
-                   <TouchableOpacity
-//                    onPress={onHandleLogin}
-                    style={{
-                      backgroundColor: '#fac25a',
-                      paddingVertical: 8,
-                      borderRadius: 5,
-                      marginHorizontal: 40,
-                      marginTop: 20,
-                      marginBottom: 12,
-                      top:500,
-                    }} >
-                      <Text style={{
-                          textAlign: 'center',
-                          fontWeight: 'bold',
-                          color: 'white',
-                          fontSize: 18,
-                      }}>
-                             Login
-                      </Text>
-                   </TouchableOpacity>
-               </View>
-
-                <View style={{
-                         alignItems: 'center',
-                         justifyContent: 'center',
-                         top:240,
-                     }}>
-                     <Text>Don't have an account ?</Text>
-                     <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                       <Text style={{ color: '#d60e45', fontWeight: '500' }}>
-                         Sign up
-                       </Text>
-                     </TouchableOpacity>
-                </View>
-
-        </View>
-    </KeyboardAwareScrollView>
+    <View>
+      <View className="justify-center items-center my-5">
+        <Text className="text-2xl font-medium tracking-widest">
+          Welcome , <Text className="text-[#d60e45]">{username}</Text>
+        </Text>
+      </View>
+      <TouchableOpacity
+        onPress={pickImage}
+        className="rounded-md bg-gray-400 items-center justify-center mx-10 mb-10"
+      >
+        {userImageUrl === undefined ? (
+          <Ionicons name="camera" size={50} color="white" />
+        ) : isLoading ? (
+          <ActivityIndicator size={"large"} color="white" />
+        ) : (
+          <Image
+            source={{ uri: userImageUrl }}
+            className="h-40 w-full rounded-md"
+          />
+        )}
+      </TouchableOpacity>
+      <View className="items-center justify-center">
+        <Text className="tracking-widest bg-gray-200 rounded-lg w-80 text-base py-2 px-1 mx-3 mb-5 text-blue-900 font-light">
+          {username}
+        </Text>
+        <Text className="tracking-widest bg-gray-200 rounded-lg w-80 text-base py-2 px-1 mx-3 mb-5 text-blue-900 font-light">
+          {userEmail}
+        </Text>
+      </View>
+      <View>
+        <TouchableOpacity
+          onPress={handleSignOut}
+          className="bg-[#fac25a] py-2 rounded-md mx-20 mt-10 mb-3"
+        >
+          <Text className="text-center text-white font-semibold text-lg">
+            Sign Out{" "}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <StatusBar barStyle={"default"} />
+    </View>
   );
 };
 
-export default LoginScreen;
+export default ProfileScreen;

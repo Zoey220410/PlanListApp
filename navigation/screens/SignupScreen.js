@@ -3,26 +3,42 @@ import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 const backImage = require("../../assets/background_signin.jpg");
 import { useNavigation } from "@react-navigation/native";
-//import { signInWithEmailAndPassword } from "firebase/auth";
-//import { auth } from "../../firebase/config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../App";
 //import { registerIndieID } from "native-notify";
 //import { processAuthError } from "../Utils";
+//const RegisterScreen = () => {
+//  const navigation = useNavigation();
+//  const [email, setEmail] = useState("");
+//  const [password, setPassword] = useState("");
+//  const [confirmPassword, setConfirmPassword] = useState("");
+//
 
-const LoginScreen = () => {
-  const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  console.log("email = ", email);
+const SignupScreen = () => {
+    const navigation = useNavigation();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-//  const onHandleLogin = () => {
+  const onHandleLogin = () => {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          console.log("User created successfully!");
+        })
+        .catch((error) => {
+          console.error("Error signing in: ", error);
+        });
 //    if (email !== "" && password !== "") {
-//      signInWithEmailAndPassword(auth, email, password)
+//      signInWithEmailAndPassword.then(()=>{
+//                                         console.log("User created successfully!");``
+//                                        })
 //        .then(() => registerIndieID(`${email}`, 6469, "zAbc4Qr227l0eSD1Cvpfo8"))
 //        .catch((error) => {
 //          processAuthError(error);
 //        });
-//    }
-//  };
+    }
+
   return (
 //    <KeyboardAwareScrollView className="bg-black">
 //     <View style={{ flex: 1, position: 'relative' }}>
@@ -50,7 +66,7 @@ const LoginScreen = () => {
 //                          paddingTop: 12,
 //                          marginTop: 12,
 //                        }}>
-//                              Sign in{" "}
+//                              Sign Up{" "}
 //                </Text>
 //          </View>
  <KeyboardAwareScrollView style={{ backgroundColor: 'white' }}>
@@ -68,7 +84,7 @@ const LoginScreen = () => {
                      marginHorizontal: 12,
                      marginBottom: 20,
                      zIndex: 999,
-                     top: 430,
+                     top: 450,
                    }}
                    placeholder="Enter Email"
                    keyboardType="email-address"
@@ -103,9 +119,34 @@ const LoginScreen = () => {
                   />
               </View>
 
+              <View>
+                  <TextInput
+                    style={{
+                      letterSpacing: 2,
+                      backgroundColor: '#f3f3f3',
+                      borderRadius: 10,
+                      width: 360,
+                      fontSize: 20,
+                      paddingVertical: 8,
+                      paddingHorizontal: 4,
+                      marginHorizontal: 12,
+                      marginBottom: 20,
+                      zIndex: 999,
+                      top: 450
+                    }}
+                    placeholder="Confirm Password"
+                    secureTextEntry={true}
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    textContentType="password"
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+              </View>
+
                <View>
                    <TouchableOpacity
-//                    onPress={onHandleLogin}
+                    onPress={onHandleLogin}
                     style={{
                       backgroundColor: '#fac25a',
                       paddingVertical: 8,
@@ -121,27 +162,27 @@ const LoginScreen = () => {
                           color: 'white',
                           fontSize: 18,
                       }}>
-                             Login
+                             Register
                       </Text>
                    </TouchableOpacity>
                </View>
 
-                <View style={{
+               <View style={{
                          alignItems: 'center',
                          justifyContent: 'center',
-                         top:540,
+                         top:340,
                      }}>
-                     <Text>Don't have an account ?</Text>
-                     <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                     <Text>Already have an account ?</Text>
+                     <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                        <Text style={{ color: '#d60e45', fontWeight: '500' }}>
                          Sign up
                        </Text>
                      </TouchableOpacity>
-                </View>
+               </View>
 
         </View>
     </KeyboardAwareScrollView>
   );
 };
 
-export default LoginScreen;
+export default SignupScreen;
