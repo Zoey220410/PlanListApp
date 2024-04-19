@@ -4,7 +4,10 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+const Stack = createNativeStackNavigator();
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
   authDomain: "timeleaf-44f2c.firebaseapp.com",
@@ -20,7 +23,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
 function App() {
-  return <MainContainer />;
+    return (
+        <>
+          <MainContainer />
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen name="Home" component={HomeScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </>
+    );
 }
 
 export default App;

@@ -66,7 +66,7 @@ const CommunityScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headTitle}>
-        <Text style={styles.text}>Dicover</Text>
+        <Text style={styles.text}>Discover</Text>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>

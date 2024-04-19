@@ -1,15 +1,3 @@
-//import * as React from 'react';
-//import { View, Text } from 'react-native';
-//
-//export default function ProfileScreen({ navigation }) {
-//    return (
-//        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//            <Text
-//                onPress={() => navigation.navigate('Plans')}
-//                style={{ fontSize: 26, fontWeight: 'bold' }}>Profile Screen</Text>
-//        </View>
-//    );
-//}
 import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -19,12 +7,37 @@ import { useNavigation } from "@react-navigation/native";
 //import { auth } from "../../firebase/config";
 //import { registerIndieID } from "native-notify";
 //import { processAuthError } from "../Utils";
-
-const LoginScreen = () => {
-  const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  console.log("email = ", email);
+//const RegisterScreen = () => {
+//  const navigation = useNavigation();
+//  const [email, setEmail] = useState("");
+//  const [password, setPassword] = useState("");
+//  const [confirmPassword, setConfirmPassword] = useState("");
+//
+//  const onHandleRegister = () => {
+//    if (email !== "" && password !== "" && confirmPassword !== "") {
+//      if (password !== confirmPassword) {
+//        Alert.alert("Password does not match");
+//      } else {
+//        createUserWithEmailAndPassword(auth, email, password)
+//          .then(async (res) => {
+//            console.log("Result = ", res);
+//            await addDoc(collection(db, "Users"), {
+//              userId: res.user.uid,
+//              email: res.user.email,
+//              username: res.user.email.split("@")[0],
+//            });
+//          })
+//          .catch((error) => {
+//            processAuthError(error);
+//          });
+//      }
+//    }
+//  };
+const SignUpScreen = () => {
+    const navigation = useNavigation();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
 //  const onHandleLogin = () => {
 //    if (email !== "" && password !== "") {
@@ -62,7 +75,7 @@ const LoginScreen = () => {
 //                          paddingTop: 12,
 //                          marginTop: 12,
 //                        }}>
-//                              Sign in{" "}
+//                              Sign Up{" "}
 //                </Text>
 //          </View>
  <KeyboardAwareScrollView style={{ backgroundColor: 'white' }}>
@@ -80,7 +93,7 @@ const LoginScreen = () => {
                      marginHorizontal: 12,
                      marginBottom: 20,
                      zIndex: 999,
-                     top: 430,
+                     top: 450,
                    }}
                    placeholder="Enter Email"
                    keyboardType="email-address"
@@ -115,6 +128,31 @@ const LoginScreen = () => {
                   />
               </View>
 
+              <View>
+                  <TextInput
+                    style={{
+                      letterSpacing: 2,
+                      backgroundColor: '#f3f3f3',
+                      borderRadius: 10,
+                      width: 360,
+                      fontSize: 20,
+                      paddingVertical: 8,
+                      paddingHorizontal: 4,
+                      marginHorizontal: 12,
+                      marginBottom: 20,
+                      zIndex: 999,
+                      top: 450
+                    }}
+                    placeholder="Confirm Password"
+                    secureTextEntry={true}
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    textContentType="password"
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+              </View>
+
                <View>
                    <TouchableOpacity
 //                    onPress={onHandleLogin}
@@ -133,27 +171,27 @@ const LoginScreen = () => {
                           color: 'white',
                           fontSize: 18,
                       }}>
-                             Login
+                             Register
                       </Text>
                    </TouchableOpacity>
                </View>
 
-                <View style={{
+               <View style={{
                          alignItems: 'center',
                          justifyContent: 'center',
-                         top:240,
+                         top:540,
                      }}>
-                     <Text>Don't have an account ?</Text>
-                     <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                     <Text>Already have an account ?</Text>
+                     <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                        <Text style={{ color: '#d60e45', fontWeight: '500' }}>
                          Sign up
                        </Text>
                      </TouchableOpacity>
-                </View>
+               </View>
 
         </View>
     </KeyboardAwareScrollView>
   );
 };
 
-export default LoginScreen;
+export default SignUpScreen;

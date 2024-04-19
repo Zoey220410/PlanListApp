@@ -1,15 +1,3 @@
-//import * as React from 'react';
-//import { View, Text } from 'react-native';
-//
-//export default function ProfileScreen({ navigation }) {
-//    return (
-//        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//            <Text
-//                onPress={() => navigation.navigate('Plans')}
-//                style={{ fontSize: 26, fontWeight: 'bold' }}>Profile Screen</Text>
-//        </View>
-//    );
-//}
 import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -141,7 +129,7 @@ const LoginScreen = () => {
                 <View style={{
                          alignItems: 'center',
                          justifyContent: 'center',
-                         top:240,
+                         top:540,
                      }}>
                      <Text>Don't have an account ?</Text>
                      <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
