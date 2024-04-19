@@ -1,68 +1,81 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, Button, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const personInfo = () => {
   const [name, setName] = useState('Zoey');
   const [email, setEmail] = useState('zoey089@gmail.com');
-  const [password, setPassword] = useState('**********'); // This should be handled securely
+  const [password, setPassword] = useState('**********'); // Placeholder for the password
   const [dateOfBirth, setDateOfBirth] = useState('23/05/1995');
   const [country, setCountry] = useState('US');
 
-  const onSaveChanges = () => {
-    // Handle the save changes action
-    console.log('Save changes');
+  const handleSaveChanges = () => {
+    // Here you would handle the profile update logic
+    console.log('Save changes to profile');
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.profilePicContainer}>
-          <Image
-            source={{ uri: 'your_profile_picture_uri' }} // Replace with your profile picture uri
-            style={styles.profilePic}
-          />
-          <View style={styles.addIconContainer}>
-            <Text style={styles.addIconText}>+</Text>
-          </View>
-        </TouchableOpacity>
-        <TextInput
-          style={styles.input}
-          onChangeText={setName}
-          value={name}
-          placeholder="Name"
+      <View style={styles.profileImageContainer}>
+        <Image
+          source={{ uri: 'https://via.placeholder.com/150' }} // Replace with actual image URI
+          style={styles.profileImage}
         />
-        <TextInput
-          style={styles.input}
-          onChangeText={setEmail}
-          value={email}
-          placeholder="Email"
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          onChangeText={setPassword}
-          value={password}
-          placeholder="Password"
-          secureTextEntry
-        />
-        {/* Implement date picker for date of birth */}
-        <TextInput
-          style={styles.input}
-          onChangeText={setDateOfBirth}
-          value={dateOfBirth}
-          placeholder="Date of Birth"
-        />
-        {/* Implement country picker or another TextInput for country */}
-        <TextInput
-          style={styles.input}
-          onChangeText={setCountry}
-          value={country}
-          placeholder="Country/Region"
-        />
-        <TouchableOpacity style={styles.saveButton} onPress={onSaveChanges}>
-          <Text style={styles.saveButtonText}>Save changes</Text>
+        <TouchableOpacity style={styles.editIcon}>
+          <Ionicons name="add-circle" size={24} color="black" />
         </TouchableOpacity>
       </View>
+
+      <View style={styles.inputContainer}>
+        <Text>Name</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text>Email</Text>
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          keyboardType="email-address"
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text>Password</Text>
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+          secureTextEntry
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text>Date of Birth</Text>
+        <TextInput
+          value={dateOfBirth}
+          onChangeText={setDateOfBirth}
+          style={styles.input}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text>Country/Region</Text>
+        <TextInput
+          value={country}
+          onChangeText={setCountry}
+          style={styles.input}
+        />
+      </View>
+
+      <TouchableOpacity onPress={handleSaveChanges} style={styles.saveButton}>
+        <Text style={styles.saveButtonText}>Save Changes</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -70,49 +83,43 @@ const personInfo = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
-    alignItems: 'center',
     padding: 20,
+    backgroundColor: 'white',
   },
-  profilePicContainer: {
-    position: 'relative',
-    marginBottom: 20,
+  profileImageContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
   },
-  profilePic: {
+  profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
   },
-  addIconContainer: {
+  editIcon: {
     position: 'absolute',
-    right: -10,
-    bottom: 0,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 5,
+    right: 10,
+    bottom: 10,
   },
-  addIconText: {
-    fontSize: 20,
-    color: 'black',
+  inputContainer: {
+    marginVertical: 10,
   },
   input: {
-    height: 40,
-    width: '100%',
-    margin: 12,
     borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
     padding: 10,
+    marginTop: 5,
   },
   saveButton: {
-    backgroundColor: 'blue',
-    padding: 10,
+    backgroundColor: '#007bff',
+    padding: 15,
     borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
   },
   saveButtonText: {
     color: 'white',
+    fontWeight: 'bold',
   },
 });
 

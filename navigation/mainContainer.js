@@ -78,8 +78,8 @@ export default function MainContainer()
             />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignupScreen} />
-            <Stack.Screen name="personInfo" component={SignupScreen} />
-            <Stack.Screen name="addFriend" component={SignupScreen} />
+            <Stack.Screen name="personInfo" component={personInfo} />
+            <Stack.Screen name="addFriend" component={addFriend} />
          </Stack.Navigator>
         </NavigationContainer>
 
