@@ -12,25 +12,23 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { TextInput, List, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import db from "../App";
-import { collection, addDoc } from "firebase/firestore";
+import { createPlan } from "../firebase-backend/plans-db";
 
 const Plan = ({ visible, onClose }) => {
   const [plan, setPlan] = useState("");
-  const [planDate, setPlanDate] = useState("");
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [alarmReminder, setAlarmReminder] = useState(false);
-  const [tag, setTag] = useState("");
-  const [importanceLevel, setImportanceLevel] = useState("");
+  const [tag, setTag] = useState("other");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [activeButton, setActiveButton] = useState(0);
+  const userId = "1";
 
   const handleButtonPress = (buttonId) => {
-    const tags = ["Study", "Work", "Entertainment", "Life"];
+    const tags = ["Work", "Study", "Entertainment", "Life", "Other"];
     setActiveButton(buttonId);
-    setTag(tags[buttonId]);
+    setTag(tags[buttonId - 1]);
   };
 
   const onChange1 = (event, selectedDate) => {
@@ -46,21 +44,38 @@ const Plan = ({ visible, onClose }) => {
   };
 
   const handleSubmit = async () => {
-    console.log("Plan:", plan);
-    console.log("Start Time:", startTime.toLocaleString());
-    console.log("End Time:", endTime.toLocaleString());
-    console.log("Alarm Reminder:", alarmReminder);
-    console.log("Tag:", tag);
+    try {
+      if (plan.trim() === "") {
+        alert("Please input a plan.");
+        return;
+      }
 
-    await addDoc(collection(db, "plans"), {
-      plan: plan,
-      startTime: startTime.toLocaleString(),
-      endTime: endTime.toLocaleString(),
-      alarmReminder: alarmReminder,
-      tag: tag,
-    });
+      if (endTime <= startTime) {
+        alert("Invalid Time.");
+        return;
+      }
 
-    onClose();
+      data = {
+        plan: plan,
+        startTime: startTime,
+        endTime: endTime,
+        alarmReminder: alarmReminder,
+        tag: tag,
+        userId: userId,
+      };
+
+      const planId = await createPlan(data);
+      setPlan("");
+      setStartTime(new Date());
+      setEndTime(new Date());
+      setAlarmReminder(false);
+      setTag("other");
+      setActiveButton(4);
+
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -89,14 +104,14 @@ const Plan = ({ visible, onClose }) => {
               value={startTime}
               mode={"date"}
               is24Hour={true}
-              onChange={onChange1}
+              onChange={onChange2}
             />
             <DateTimePicker
               testID="dateTimePicker"
               value={startTime}
               mode={"time"}
               is24Hour={true}
-              onChange={onChange2}
+              onChange={onChange1}
             />
           </View>
         </SafeAreaView>
@@ -121,12 +136,6 @@ const Plan = ({ visible, onClose }) => {
           </View>
         </SafeAreaView>
 
-        {/* <TextInput
-          style={styles.input}
-          label="Tag"
-          value={tag}
-          onChangeText={setTag}
-        /> */}
         <View style={{ flexDirection: "row" }}>
           <Button
             onPress={() => handleButtonPress(1)}
@@ -151,6 +160,12 @@ const Plan = ({ visible, onClose }) => {
             disabled={activeButton === 4}
           >
             <Text>Life</Text>
+          </Button>
+          <Button
+            onPress={() => handleButtonPress(5)}
+            disabled={activeButton === 5}
+          >
+            <Text>Other</Text>
           </Button>
         </View>
         <View style={styles.switchContainer}>
@@ -213,7 +228,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
-    gap: "10%",
   },
 });
 

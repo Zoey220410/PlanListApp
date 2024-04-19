@@ -1,10 +1,11 @@
 import * as React from "react";
 import MainContainer from "./navigation/mainContainer";
 import { initializeApp } from "firebase/app";
+// import { vexo } from "vexo-analytics";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
-import AuthenticatedUserProvider from "./Context/AuthenticationContext";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
   authDomain: "timeleaf-44f2c.firebaseapp.com",
@@ -17,7 +18,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore();
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// console.log(db instanceof Firestore);
 
 function App() {
     return (
@@ -29,5 +33,3 @@ function App() {
 
 export default App;
 export { db };
-export const auth = getAuth();
-

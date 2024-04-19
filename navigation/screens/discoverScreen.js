@@ -1,52 +1,180 @@
-//import * as React from 'react';
-//import { View, Text } from 'react-native';
-//
-//export default function DiscoverScreen({ navigation }) {
-//    return (
-//        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//            <Text
-//                onPress={() => navigation.navigate('Plans')}
-//                style={{ fontSize: 26, fontWeight: 'bold' }}>Discover Screen</Text>
-//        </View>
-//    );
-//}
-import React from "react";
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { IconButton, Button } from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
+// import LazyloadView from "react-native-lazyload";
+import Post from "../../components/Post";
+import { getSharing, updateSharing } from "../../firebase-backend/post-db";
+import { useNavigation } from "@react-navigation/native";
 
 const DiscoverScreen = () => {
-  // 这里可以定义你的状态和函数
+  const [posts, setPosts] = useState([]);
+  const [heartColors, setHeartColors] = useState(
+    posts ? Array(posts.length).fill("grey") : null
+  );
+  const [modalVisible, setModalVisible] = useState(false);
+  const [updatePostIndex, setUpdatePostIndex] = useState(null);
+  const [personal, setPersonal] = useState(false);
+
+  const userId = "1";
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getPosts(userId);
+    }, [personal])
+  );
+
+  useEffect(() => {
+    getPosts(userId);
+  }, [modalVisible]);
+
+  const getPosts = async (userId) => {
+    try {
+      const postData = await getSharing(userId);
+      let filteredPost = [];
+      if (!personal) {
+        filteredPost = postData.filter((data) => data.privacy !== "Private");
+      } else {
+        filteredPost = postData.filter((data) => data.userId === userId);
+      }
+
+      const initialHeartColors = filteredPost.map((post) =>
+        post.likeByUsers && post.likeByUsers.includes(userId) ? "pink" : "grey"
+      );
+      setHeartColors(initialHeartColors);
+
+      setPosts(filteredPost);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      alert("Failed to fetch posts");
+    }
+  };
+
+  useEffect(() => {
+    const updatePostAsync = async () => {
+      try {
+        if (updatePostIndex !== null) {
+          await updateSharing(posts[updatePostIndex]);
+        }
+      } catch (error) {
+        console.error("Error updating post:", error);
+      }
+    };
+
+    if (updatePostIndex !== null) {
+      updatePostAsync();
+    }
+  }, [posts]);
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
+
+  const handlePress = (index, userId) => {
+    const newColors = [...heartColors];
+    const newPosts = [...posts];
+
+    // Get the post at the specified index
+    const post = newPosts[index];
+
+    // Check if the user has already liked the post
+    const isLiked = post.likeByUsers && post.likeByUsers.includes(userId);
+
+    if (isLiked) {
+      // Unlike the post
+      post.likes -= 1;
+      // Remove userId from likeByUsers array
+      post.likeByUsers = post.likeByUsers.filter((id) => id !== userId);
+      newColors[index] = "grey";
+    } else {
+      // Like the post
+      post.likes += 1;
+      // Add userId to likeByUsers array
+      post.likeByUsers.push(userId);
+      newColors[index] = "pink";
+    }
+
+    // Update the post object in the newPosts array
+    newPosts[index] = post;
+
+    // Update state variables
+    setHeartColors(newColors);
+    setPosts(newPosts);
+    setUpdatePostIndex(index);
+  };
+
+  const navigation = useNavigation(); // use useNavigation hook
+
+  const handlePostPress = (index) => {
+    navigation.navigate("PostDetail", { postInfo: posts[index] }); // navigate to OtherScreen
+  };
+
+  const handlePersonal = () => {
+    setPersonal(!personal);
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.headTitle}>
+        <Text style={styles.text}>Dicover</Text>
+        <Button mode="contained" disabled={false} onPress={handlePersonal}>
+          <Text>{personal ? "Turn to Public" : "Turn to Personal"}</Text>
+        </Button>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <View style={styles.addWrapper}>
+            <Text style={styles.addText}>+</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      {/* <View style={styles.header}>
         <Text style={styles.headerText}>DISCOVER</Text>
-      </View>
-      <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Recommendation</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Community</Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.card}>
-          <Image style={styles.cardImage} source={{ uri: 'your_image_url_here' }} />
-          <View style={styles.cardContent}>
-            <Text style={styles.cardTitle}>15 Min. Full Body Stretch</Text>
-            <Text style={styles.cardDuration}>16:33</Text>
-          </View>
-        </View>
-        <View style={styles.card}>
-          <Image style={styles.cardImage} source={{ uri: 'your_image_url_here' }} />
-          <View style={styles.cardContent}>
-            <Text style={styles.cardTitle}>The Essence of Calculus</Text>
-            <Text style={styles.cardDuration}>17:05</Text>
-          </View>
-        </View>
-      </ScrollView>
-      <View style={styles.tabBar}>
-        {/* 这里可以加入底部导航的布局 */}
+      </View> */}
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item.id}
+        style={{ flex: 0.8 }}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            style={styles.postCard}
+            onPress={() => handlePostPress(index)}
+          >
+            {item.imageUrl === "" ? null : (
+              // <LazyloadView style={{ flex: 1 }}>
+              <Image
+                style={styles.postImage}
+                source={{ uri: item.imageUrl }}
+                loading="lazy"
+              />
+              // </LazyloadView>
+            )}
+            <View style={styles.postContent}>
+              <Text style={styles.postTitle}>{item.title}</Text>
+              <Text style={styles.content}>{item.content}</Text>
+              <View style={styles.row}>
+                <Text style={styles.postUser}>{item.userId}</Text>
+                <IconButton
+                  icon="heart"
+                  size={20}
+                  onPress={() => handlePress(index, userId)}
+                  iconColor={heartColors[index]}
+                />
+                <Text style={styles.postLikes}>{item.likes}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+
+      <View>
+        <Post visible={modalVisible} onClose={handleModalClose} />
       </View>
     </View>
   );
@@ -54,22 +182,24 @@ const DiscoverScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
+    height: "100%",
+    width: "100%",
   },
   header: {
-    backgroundColor: '#FFC0CB',
-    padding: 10,
+    flex: 0.2,
+    backgroundColor: "#FFC0CB",
+    padding: 20,
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#000",
+    textAlign: "center",
   },
   tabBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: 10,
   },
   tabButton: {
@@ -77,38 +207,78 @@ const styles = StyleSheet.create({
   },
   tabButtonText: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
   },
-  scrollView: {
-    margin: 10,
-  },
-  card: {
-    backgroundColor: '#fff',
+  postCard: {
+    backgroundColor: "#fff",
     marginBottom: 10,
-    elevation: 3, // for Android
-    // shadow properties for iOS
-    shadowColor: '#000',
+    elevation: 3,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
   },
-  cardImage: {
-    width: '100%',
+  postImage: {
+    width: "100%",
     height: 200,
-    resizeMode: 'cover',
+    resizeMode: "contain",
   },
-  cardContent: {
+  postContent: {
     padding: 10,
   },
-  cardTitle: {
+  postContent: {
+    margin: "2%",
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
-  cardDuration: {
+  postTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#009",
+  },
+  postUser: {
     fontSize: 14,
-    color: '#000',
+    color: "#000",
     opacity: 0.6,
+  },
+  postLikes: {
+    fontSize: 14,
+    color: "#000",
+    opacity: 0.6,
+  },
+  headTitle: {
+    flex: 0.2,
+    backgroundColor: "#FFC0CB",
+    mixBlendMode: "multiply",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: "5%",
+    marginBottom: "2%",
+  },
+  text: {
+    color: "black",
+    fontSize: 32,
+  },
+  addWrapper: {
+    width: 50,
+    height: 50,
+    backgroundColor: "#FFF",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#C0C0C0",
+    borderWidth: 1,
+    margin: "2%",
+  },
+  addText: {
+    fontSize: 26,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });
 
