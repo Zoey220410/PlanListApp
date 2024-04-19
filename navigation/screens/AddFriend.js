@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const addFriend = () => {
+const AddFriend = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState(null);
 
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default addFriend;
+export default AddFriend;

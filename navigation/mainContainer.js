@@ -4,8 +4,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
-import personInfo from "./screens/personInfo";
-import addFriend from "./screens/addFriend";
+import PersonInfo from "./screens/PersonInfo";
+import AddFriend from "./screens/AddFriend";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 //Screens
@@ -78,8 +78,8 @@ export default function MainContainer()
             />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignupScreen} />
-            <Stack.Screen name="personInfo" component={personInfo} />
-            <Stack.Screen name="addFriend" component={addFriend} />
+            <Stack.Screen name="PersonInfo" component={PersonInfo} />
+            <Stack.Screen name="AddFriend" component={AddFriend} />
          </Stack.Navigator>
         </NavigationContainer>
 

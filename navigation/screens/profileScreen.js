@@ -15,12 +15,12 @@ const ProfileScreen = () => {
         />
         <Text style={styles.profileName}>Zoey</Text>
         <View style={styles.buttonGroup}>
-          <TouchableOpacity onPress={() => navigation.navigate("personInfo")}>
+          <TouchableOpacity onPress={() => navigation.navigate("PersonInfo")}>
              <Text style={{ color: "#4e8df5", fontWeight: '500' }}>
                Edit profile
              </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("addFriend")}>
+          <TouchableOpacity onPress={() => navigation.navigate("AddFriend")}>
              <Text style={{ color: "#f564e3", fontWeight: '500' }}>
                Add Friends
              </Text>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const personInfo = () => {
+const PersonInfo = () => {
   const [name, setName] = useState('Zoey');
   const [email, setEmail] = useState('zoey089@gmail.com');
   const [password, setPassword] = useState('**********'); // Placeholder for the password
@@ -123,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default personInfo;
+export default PersonInfo;
