@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../App";
+
 //import { registerIndieID } from "native-notify";
 //import { processAuthError } from "../Utils";
 //const RegisterScreen = () => {

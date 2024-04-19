@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
-
+import AuthenticatedUserProvider from "./Context/AuthenticationContext";
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
   authDomain: "timeleaf-44f2c.firebaseapp.com",
@@ -21,7 +21,9 @@ const db = getFirestore();
 
 function App() {
     return (
+       <AuthenticatedUserProvider>
           <MainContainer />
+       </AuthenticatedUserProvider>
     );
 }
 
