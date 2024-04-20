@@ -133,7 +133,7 @@ const DiscoverScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headTitle}>
-        <Text style={styles.text}>Dicover</Text>
+        <Text style={styles.text}>Discover</Text>
         <Button mode="contained" disabled={false} onPress={handlePersonal}>
           <Text>{personal ? "Turn to Public" : "Turn to Personal"}</Text>
         </Button>

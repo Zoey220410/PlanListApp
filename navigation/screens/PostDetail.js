@@ -11,6 +11,7 @@ import { TextInput, List, Button, IconButton } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 import { updateSharing } from "../../firebase-backend/post-db";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const PostDetail = () => {
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
@@ -65,7 +66,7 @@ const PostDetail = () => {
   };
 
   return (
-    <ScrollView>
+    <KeyboardAwareScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.containerStyle}>
         <View style={{ height: "auto" }}>
           {info.imageUrl && (
@@ -115,7 +116,7 @@ const PostDetail = () => {
           ))}
         </List.Section>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
