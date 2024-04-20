@@ -4,6 +4,7 @@ import { TextInput, List, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { createSharing } from "../firebase-backend/post-db";
 import { AuthenticatedUserContext } from "../Context/AuthenticationContext";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const Post = ({ visible, onClose }) => {
   const [title, setTitle] = useState("");
@@ -86,65 +87,70 @@ const Post = ({ visible, onClose }) => {
 
   return (
     <Modal visible={visible} onRequestClose={onClose} animationType="slide">
-      <View style={styles.containerStyle}>
-        <View style={styles.headTitle}>
-          <Text style={styles.text}>Create Your Post</Text>
-        </View>
-        <View
-          style={{
-            width: "50%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            mode="contained"
-            onPress={() => handleButtonPress(1)}
-            disabled={activeButton === 1}
+      <KeyboardAwareScrollView style={{ flex: 1 }}>
+        <View style={styles.containerStyle}>
+          <View style={styles.headTitle}>
+            <Text style={styles.text}>Create Your Post</Text>
+          </View>
+          <View
+            style={{
+              width: "50%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
           >
-            <Text>Private</Text>
+            <Button
+              mode="contained"
+              onPress={() => handleButtonPress(1)}
+              disabled={activeButton === 1}
+            >
+              <Text>Private</Text>
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => handleButtonPress(2)}
+              disabled={activeButton === 2}
+            >
+              <Text>Public</Text>
+            </Button>
+          </View>
+          <TextInput
+            style={styles.input}
+            label="Title"
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TextInput
+            style={styles.input}
+            label="Content"
+            value={content}
+            onChangeText={setContent}
+          />
+          <Button onPress={pickImage} mode="contained">
+            <Text>Choose Image</Text>
           </Button>
-          <Button
-            mode="contained"
-            onPress={() => handleButtonPress(2)}
-            disabled={activeButton === 2}
+          {image && (
+            <Image
+              source={{ uri: image }}
+              style={{ width: 200, height: 200 }}
+            />
+          )}
+          <View
+            style={{
+              width: "50%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
           >
-            <Text>Public</Text>
-          </Button>
+            <Button onPress={handleSubmit} mode="outlined">
+              <Text>Submit</Text>
+            </Button>
+            <Button onPress={handleClose} mode="outlined">
+              <Text>Back</Text>
+            </Button>
+          </View>
         </View>
-        <TextInput
-          style={styles.input}
-          label="Title"
-          value={title}
-          onChangeText={setTitle}
-        />
-        <TextInput
-          style={styles.input}
-          label="Content"
-          value={content}
-          onChangeText={setContent}
-        />
-        <Button onPress={pickImage} mode="contained">
-          <Text>Choose Image</Text>
-        </Button>
-        {image && (
-          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-        )}
-        <View
-          style={{
-            width: "50%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button onPress={handleSubmit} mode="outlined">
-            <Text>Submit</Text>
-          </Button>
-          <Button onPress={handleClose} mode="outlined">
-            <Text>Back</Text>
-          </Button>
-        </View>
-      </View>
+      </KeyboardAwareScrollView>
     </Modal>
   );
 };
@@ -158,7 +164,8 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#fff",
     flexDirection: "column",
-    justifyContent: "space-between",
+    gap: "40%",
+    // justifyContent: "space-between",
     alignItems: "center",
   },
   headTitle: {

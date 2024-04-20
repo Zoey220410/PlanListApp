@@ -15,6 +15,7 @@ import Post from "../../components/Post";
 import { getSharing, updateSharing } from "../../firebase-backend/post-db";
 import { useNavigation } from "@react-navigation/native";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const DiscoverScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -147,6 +148,7 @@ const DiscoverScreen = () => {
       {/* <View style={styles.header}>
         <Text style={styles.headerText}>DISCOVER</Text>
       </View> */}
+
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
