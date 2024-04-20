@@ -22,6 +22,7 @@ import { Platform } from "react-native";
 import { getWeather } from "../../firebase-backend/weatherController";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 import * as Location from "expo-location";
+import { createEvent } from "../../firebase-backend/analyticsController";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -63,6 +64,7 @@ export default function PlanScreen() {
   const [location, setLocation] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
+  const [screenStartTime, setScreenStartTime] = useState(0);
   // const [userId, setUserId] = useState("");
 
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
@@ -70,15 +72,38 @@ export default function PlanScreen() {
   );
 
   const userId = user ? user.uid : "";
+  console.log(userId);
 
   const navigatation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
-      getTodos();
-    }, [])
-  );
+      const fetchData = async () => {
+        try {
+          await getTodos();
+          setScreenStartTime(Date.now());
+        } catch (error) {
+          console.error("Error fetching todos:", error);
+        }
+      };
 
+      fetchData(); // 立即执行
+
+      return async () => {
+        const timeSpent = Date.now() - screenStartTime;
+        console.log(timeSpent);
+        try {
+          await createEvent({
+            user: userId,
+            screen: "Main",
+            Plantime: timeSpent,
+          });
+        } catch (error) {
+          console.error("Error creating event:", error);
+        }
+      };
+    }, [userId]) // 依赖项包括 userId
+  );
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -94,7 +119,6 @@ export default function PlanScreen() {
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
-        console.log(location);
         if (location === null) return;
         const weatherData = await getWeather(
           location.coords.latitude,
@@ -111,10 +135,11 @@ export default function PlanScreen() {
 
   useEffect(() => {
     getTodos();
-  }, [modalVisible, choice, user]);
+  }, [modalVisible, choice]);
 
   const getTodos = async () => {
     try {
+      console.log(userId);
       const todos = await getPlans(userId);
       if (choice === "All") {
         setPlans(todos);

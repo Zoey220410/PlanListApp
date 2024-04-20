@@ -6,6 +6,8 @@ const backImage = require("../../assets/favicon.png");
 import { useNavigation } from "@react-navigation/native";
 import { signIn, signOutUser } from "../../firebase-backend/userController";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
+import { createTime } from "../../firebase-backend/analyticsController";
+import { getEvents } from "../../firebase-backend/analyticsController";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../App";
 //import { registerIndieID } from "native-notify";
@@ -30,6 +32,11 @@ const ProfileScreen = () => {
   };
 
   const handleLogout = async () => {
+    const res = await getEvents(user.uid);
+    const timeId = await createTime({
+      total: res.Main + res.Bin,
+      user: user.uid,
+    });
     await signOutUser();
     setUser(null);
   };
