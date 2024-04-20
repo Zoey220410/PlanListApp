@@ -130,6 +130,8 @@ const DiscoverScreen = () => {
 
   const handlePersonal = () => {
     setPersonal(!personal);
+    setUpdatePostIndex(null);
+    k;
   };
 
   return (

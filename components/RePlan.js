@@ -100,7 +100,7 @@ const RePlan = ({ visible, onClose, reAddId, newplan }) => {
               value={startTime}
               mode={"time"}
               is24Hour={true}
-              onChange={onChange2}
+              onChange={onChange1}
             />
           </View>
         </SafeAreaView>
