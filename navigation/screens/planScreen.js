@@ -79,23 +79,24 @@ export default function PlanScreen() {
       const fetchData = async () => {
         try {
           await getTodos();
-          setScreenStartTime(Date.now());
         } catch (error) {
           console.error("Error fetching todos:", error);
         }
       };
 
+      console.log("hi");
       fetchData();
 
       return async () => {
         const timeSpent = Date.now() - screenStartTime;
-        console.log(timeSpent);
+
         try {
           await createEvent({
             user: userId,
             screen: "Main",
             Plantime: timeSpent,
           });
+          console.log(timeSpent);
         } catch (error) {
           console.error("Error creating event:", error);
         }
@@ -131,8 +132,8 @@ export default function PlanScreen() {
     fetchWeatherData();
   }, [location]);
 
-  useEffect(async () => {
-    await getTodos();
+  useEffect(() => {
+    getTodos();
   }, [modalVisible, choice]);
 
   const getTodos = async () => {

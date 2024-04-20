@@ -66,8 +66,8 @@ export default function BinScreen() {
     }, [])
   );
 
-  useEffect(async () => {
-    await getRePlans();
+  useEffect(() => {
+    getRePlans();
   }, [modalVisible]);
 
   const getRePlans = async () => {

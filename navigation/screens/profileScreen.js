@@ -18,6 +18,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [totalTime, setTotalTime] = useState(0);
 
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
     AuthenticatedUserContext
@@ -36,6 +37,7 @@ const ProfileScreen = () => {
       total: res.Main + res.Bin,
       user: user.uid,
     });
+    setTotalTime(res.Bin + res.Main);
     await signOutUser();
     setUser(null);
   };
@@ -184,6 +186,7 @@ const ProfileScreen = () => {
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
             <Text style={{ color: "#d60e45", fontWeight: "500" }}>Sign up</Text>
           </TouchableOpacity>
+          {totalTime !== 0 ? <Text>Test Time: {totalTime} </Text> : null}
         </View>
       </View>
     </KeyboardAwareScrollView>

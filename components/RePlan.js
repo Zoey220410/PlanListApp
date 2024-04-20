@@ -35,9 +35,10 @@ const RePlan = ({ visible, onClose, reAddId, newplan }) => {
   }, [newplan]);
 
   const handleButtonPress = (buttonId) => {
-    const tags = ["Study", "Work", "Entertainment", "Life", "Other"];
+    const tags = ["Work", "Study", "Entertainment", "Life", "Other"];
     setActiveButton(buttonId);
-    setTag(tags[buttonId]);
+    setTag(tags[buttonId - 1]);
+    console.log(tag);
   };
 
   const onChange1 = (event, selectedDate) => {
