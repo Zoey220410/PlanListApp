@@ -18,6 +18,10 @@ const Post = ({ visible, onClose }) => {
   const userId = user ? user.uid : "";
 
   const handleSubmit = async () => {
+    if (!user) {
+      alert("Please log in first.");
+      return;
+    }
     if (content.trim() == "" || title.trim() == "") {
       alert("Invalid Input.");
       return;

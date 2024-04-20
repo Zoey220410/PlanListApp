@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 
 export const createEvent = async (data) => {
+  if (data.user === "") return null;
   const todosCollectionRef = collection(db, "events");
   await addDoc(todosCollectionRef, {
     data,
@@ -19,25 +20,48 @@ export const createEvent = async (data) => {
   return eventId;
 };
 
-export const getEvents = async (userId) => {
-  const result = [];
+export const createTime = async (data) => {
+  const timeCollectionRef = collection(db, "Time");
+  await addDoc(timeCollectionRef, {
+    data,
+  }).then((result) => {
+    timeId = result.id;
+  });
 
+  return timeId;
+};
+
+export const getEvents = async (userId) => {
   const eventsCollectionRef = collection(db, "events");
+  let result;
 
   try {
     await getDocs(eventsCollectionRef).then((events) => {
-      if (events.empty) return; // If no posts found, return early
-
-      const filteredPosts = posts.docs.filter(
-        (post) => post.data().userId === userId
-      );
-
-      filteredPosts.forEach((event) => {
-        result.push({
-          id: event.id,
-          ...event.data(),
-        });
+      if (events.empty) return; // If no events found, return early
+      const main = events.docs.filter((el) => {
+        return (
+          el.data().data.user === userId && el.data().data.screen === "Main"
+        );
       });
+
+      const mainTime = main.reduce((total, el) => {
+        return total + el.data().data.Plantime;
+      }, 0);
+
+      const bin = events.docs.filter((el) => {
+        return (
+          el.data().data.user === userId && el.data().data.screen === "Recycle"
+        );
+      });
+
+      const binTime = main.reduce((total, el) => {
+        return total + el.data().data.Plantime;
+      }, 0);
+
+      result = {
+        Main: mainTime / (1000 * 60),
+        Bin: binTime / (1000 * 60),
+      };
     });
   } catch (error) {
     console.error("Error fetching posts:", error);

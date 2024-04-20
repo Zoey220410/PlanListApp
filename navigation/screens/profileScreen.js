@@ -8,6 +8,9 @@ import { signIn, signOutUser } from "../../firebase-backend/userController";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../App";
+import { getEvents } from "../../firebase-backend/analyticsController";
+import { createTime } from "../../firebase-backend/analyticsController";
+// import { textSpanContainsPosition } from "typescript";
 //import { registerIndieID } from "native-notify";
 //import { processAuthError } from "../Utils";
 
@@ -24,11 +27,15 @@ const ProfileScreen = () => {
     if (email !== "" && password !== "") {
       const user = await signIn(email, password);
       setUser(user);
-      console.log(user);
     }
   };
 
   const handleLogout = async () => {
+    const res = await getEvents(user.uid);
+    const timeId = await createTime({
+      total: res.Main + res.Bin,
+      user: user.uid,
+    });
     await signOutUser();
     setUser(null);
   };

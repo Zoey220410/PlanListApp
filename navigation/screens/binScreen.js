@@ -18,6 +18,7 @@ import {
 } from "../../firebase-backend/recyclePlans-db";
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
+import { createEvent } from "../../firebase-backend/analyticsController";
 
 export default function BinScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -26,16 +27,27 @@ export default function BinScreen() {
   const [tag, setTag] = useState(null);
   const [alarmReminder, setAlarmReminder] = useState(null);
   const [reAddId, setReAddId] = useState(null);
+  const [screenStartTime, setScreenStartTime] = useState(0);
   // const [userId, setUserId] = useState("");
 
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
     AuthenticatedUserContext
   );
   const userId = user ? user.uid : "";
+  console.log(userId);
 
   useFocusEffect(
     React.useCallback(() => {
       getRePlans();
+      setScreenStartTime(Date.now());
+      return async () => {
+        const timeSpent = Date.now() - screenStartTime;
+        await createEvent({
+          user: userId,
+          screen: "Recycle",
+          Plantime: timeSpent,
+        });
+      };
     }, [])
   );
 
