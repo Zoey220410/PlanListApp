@@ -10,7 +10,7 @@ import {
 
 export const createEvent = async (data) => {
   if (data.user === "") return null;
-  const todosCollectionRef = collection(db, "events");
+  const todosCollectionRef = collection(db, "A_Test");
   await addDoc(todosCollectionRef, {
     data,
   }).then((result) => {
@@ -21,7 +21,7 @@ export const createEvent = async (data) => {
 };
 
 export const createTime = async (data) => {
-  const timeCollectionRef = collection(db, "Time");
+  const timeCollectionRef = collection(db, "A_Test_Time");
   await addDoc(timeCollectionRef, {
     data,
   }).then((result) => {
@@ -32,7 +32,7 @@ export const createTime = async (data) => {
 };
 
 export const getEvents = async (userId) => {
-  const eventsCollectionRef = collection(db, "events");
+  const eventsCollectionRef = collection(db, "A_Test");
   let result;
 
   try {

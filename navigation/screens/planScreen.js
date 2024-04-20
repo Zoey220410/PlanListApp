@@ -75,15 +75,29 @@ export default function PlanScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
-      getTodos();
-      setScreenStartTime(Date.now());
+      const fetchData = async () => {
+        try {
+          await getTodos();
+          setScreenStartTime(Date.now());
+        } catch (error) {
+          console.error("Error fetching todos:", error);
+        }
+      };
+
+      fetchData();
+
       return async () => {
         const timeSpent = Date.now() - screenStartTime;
-        await createEvent({
-          user: userId,
-          screen: "Main",
-          Plantime: timeSpent,
-        });
+        console.log(timeSpent);
+        try {
+          await createEvent({
+            user: userId,
+            screen: "Main",
+            Plantime: timeSpent,
+          });
+        } catch (error) {
+          console.error("Error creating event:", error);
+        }
       };
     }, [])
   );
@@ -116,9 +130,9 @@ export default function PlanScreen() {
     fetchWeatherData();
   }, [location]);
 
-  useEffect(() => {
-    getTodos();
-  }, [modalVisible, choice, user]);
+  useEffect(async () => {
+    await getTodos();
+  }, [modalVisible, choice]);
 
   const getTodos = async () => {
     try {
