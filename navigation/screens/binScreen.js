@@ -19,6 +19,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 import { createEvent } from "../../firebase-backend/analyticsController";
+import { IconButton } from "react-native-paper";
 
 export default function BinScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,15 +40,6 @@ export default function BinScreen() {
   useFocusEffect(
     React.useCallback(() => {
       let screenStartTime = Date.now();
-      const fetchData = async () => {
-        try {
-          await getRePlans();
-        } catch (error) {
-          console.error("Error fetching todos:", error);
-        }
-      };
-
-      fetchData();
 
       return async () => {
         const timeSpent = Date.now() - screenStartTime;
@@ -67,7 +59,7 @@ export default function BinScreen() {
 
   useEffect(() => {
     getRePlans();
-  }, [modalVisible]);
+  }, [modalVisible, user]);
 
   const getRePlans = async () => {
     try {
@@ -102,10 +94,20 @@ export default function BinScreen() {
     setModalVisible(false);
   };
 
+  const handleRefresh = async () => {
+    await getRePlans();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headTitle}>
         <Text style={styles.text}>Find Back Your Plans</Text>
+        <IconButton
+          icon="refresh"
+          color="blue"
+          size={25}
+          onPress={handleRefresh}
+        />
       </View>
       <ScrollView
         contentContainerStyle={{

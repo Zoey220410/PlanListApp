@@ -11,11 +11,17 @@ import {
 export const createEvent = async (data) => {
   if (data.user === "") return null;
   const todosCollectionRef = collection(db, "A_Test");
-  await addDoc(todosCollectionRef, {
-    data,
-  }).then((result) => {
-    eventId = result.id;
-  });
+  console.log(data);
+  try {
+    await addDoc(todosCollectionRef, {
+      data,
+    }).then((result) => {
+      eventId = result.id;
+      console.log("success");
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
   return eventId;
 };
@@ -32,21 +38,25 @@ export const createTime = async (data) => {
 };
 
 export const getEvents = async (userId) => {
+  console.log(userId);
   const eventsCollectionRef = collection(db, "A_Test");
   let result;
 
   try {
     await getDocs(eventsCollectionRef).then((events) => {
       if (events.empty) return; // If no events found, return early
-      const main = events.docs.filter((el) => {
+      const mainT = events.docs.filter((el) => {
         return (
           el.data().data.user === userId && el.data().data.screen === "Main"
         );
       });
+      console.log(mainT);
 
-      const mainTime = main.reduce((total, el) => {
+      const mainTime = mainT.reduce((total, el) => {
         return total + el.data().data.Plantime;
       }, 0);
+
+      console.log(mainTime);
 
       const bin = events.docs.filter((el) => {
         return (
@@ -54,9 +64,11 @@ export const getEvents = async (userId) => {
         );
       });
 
-      const binTime = main.reduce((total, el) => {
+      const binTime = bin.reduce((total, el) => {
         return total + el.data().data.Plantime;
       }, 0);
+
+      console.log(binTime);
 
       result = {
         Main: mainTime / (1000 * 60),

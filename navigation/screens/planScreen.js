@@ -12,7 +12,7 @@ import Task from "../../components/Task";
 import Plan from "../../components/Plan";
 import { getPlans } from "../../firebase-backend/plans-db";
 import { deleteTodo } from "../../firebase-backend/plans-db";
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import { createRecyclePlans } from "../../firebase-backend/recyclePlans-db";
 import { useFocusEffect } from "@react-navigation/native";
 import * as Device from "expo-device";
@@ -76,26 +76,19 @@ export default function PlanScreen() {
   useFocusEffect(
     React.useCallback(() => {
       let screenStartTime = Date.now();
-      const fetchData = async () => {
-        try {
-          await getTodos();
-        } catch (error) {
-          console.error("Error fetching todos:", error);
-        }
-      };
-
-      fetchData();
 
       return async () => {
         const timeSpent = Date.now() - screenStartTime;
+        console.log(timeSpent);
 
         try {
-          await createEvent({
+          const data = {
             user: userId,
             screen: "Main",
             Plantime: timeSpent,
-          });
-          console.log(timeSpent);
+          };
+          console.log(data);
+          await createEvent(data);
         } catch (error) {
           console.error("Error creating event:", error);
         }
@@ -133,7 +126,7 @@ export default function PlanScreen() {
 
   useEffect(() => {
     getTodos();
-  }, [modalVisible, choice]);
+  }, [modalVisible, choice, user]);
 
   const getTodos = async () => {
     try {
@@ -177,14 +170,16 @@ export default function PlanScreen() {
 
   useEffect(() => {
     plans.map((item) => {
-      sendPushNotification(
-        item.startDate,
-        item.data.plan,
-        item.data.tag,
-        item.data.alarmReminder
-      );
+      if (item.data.userId === userId) {
+        sendPushNotification(
+          item.startDate,
+          item.data.plan,
+          item.data.tag,
+          item.data.alarmReminder
+        );
+      }
     });
-  }, [plans]);
+  }, [plans, userId]);
 
   const handleDelete = async (id) => {
     await deleteTodo(id);
@@ -212,11 +207,20 @@ export default function PlanScreen() {
     setChoice(tags[buttonId]);
   };
 
+  const handleRefresh = async () => {
+    await getTodos();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headTitle}>
         <Text style={styles.text}>Plans Today</Text>
-
+        <IconButton
+          icon="refresh"
+          color="blue"
+          size={25}
+          onPress={handleRefresh}
+        />
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
