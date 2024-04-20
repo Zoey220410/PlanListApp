@@ -24,15 +24,15 @@ const DiscoverScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [updatePostIndex, setUpdatePostIndex] = useState(null);
   const [personal, setPersonal] = useState(false);
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
 
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
     AuthenticatedUserContext
   );
+  const userId = user ? user.uid : "";
 
   useFocusEffect(
     React.useCallback(() => {
-      setUserId(user ? user.uid : "");
       getPosts(userId);
     }, [personal])
   );

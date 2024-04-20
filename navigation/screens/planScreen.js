@@ -61,16 +61,16 @@ export default function PlanScreen() {
   const [weather, setWeather] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
 
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
     AuthenticatedUserContext
   );
+  const userId = user ? user.uid : "";
 
   useFocusEffect(
     React.useCallback(() => {
       fetchWeatherData();
-      setUserId(user ? user.uid : "");
       getTodos();
     }, [])
   );

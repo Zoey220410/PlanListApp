@@ -15,7 +15,6 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  console.log("email = ", email);
 
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
     AuthenticatedUserContext
