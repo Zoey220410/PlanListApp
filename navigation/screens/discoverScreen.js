@@ -46,11 +46,13 @@ const DiscoverScreen = () => {
     try {
       let postData;
       let filteredPost = [];
-      if (!user) return [];
-      if (!personal) {
+      if (!user && personal) {
+        filteredPost = [];
+      } else if (!personal) {
         postData = await getSharing("all");
         filteredPost = postData.filter((data) => data.privacy !== "Private");
       } else {
+        console.log(userId);
         filteredPost = await getSharing(userId);
       }
 

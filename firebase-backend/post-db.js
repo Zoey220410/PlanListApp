@@ -71,6 +71,7 @@ const uploadToFirebase = async (uri, name, onProgress) => {
 
 export const getSharing = async (userId) => {
   const result = [];
+  console.log(userId);
 
   const postsCollectionRef = collection(db, "posts");
 
@@ -88,10 +89,16 @@ export const getSharing = async (userId) => {
           (post) => post.data().userId === userId
         );
       }
+      let pid = "";
 
       filteredPosts.forEach((post) => {
+        if (filteredPosts.length === 1) {
+          pid = "1";
+        } else {
+          pid = post.id;
+        }
         result.push({
-          id: post.id,
+          id: pid,
           ...post.data(),
         });
       });
