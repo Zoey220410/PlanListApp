@@ -78,6 +78,7 @@ export default function PlanScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
+      let screenStartTime = Date.now();
       const fetchData = async () => {
         try {
           await getTodos();
@@ -87,7 +88,7 @@ export default function PlanScreen() {
         }
       };
 
-      fetchData(); // 立即执行
+      fetchData();
 
       return async () => {
         const timeSpent = Date.now() - screenStartTime;
@@ -102,7 +103,7 @@ export default function PlanScreen() {
           console.error("Error creating event:", error);
         }
       };
-    }, [userId]) // 依赖项包括 userId
+    }, [userId])
   );
   useEffect(() => {
     (async () => {

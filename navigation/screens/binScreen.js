@@ -34,22 +34,37 @@ export default function BinScreen() {
   );
 
   const userId = user ? user.uid : "";
-  console.log(userId);
 
   useFocusEffect(
     React.useCallback(() => {
-      getRePlans();
-      setScreenStartTime(Date.now());
+      let screenStartTime = Date.now();
+
+      const fetchData = async () => {
+        try {
+          await getRePlans();
+        } catch (error) {
+          console.error("Error fetching todos:", error);
+        }
+      };
+
+      fetchData();
+
       return async () => {
         const timeSpent = Date.now() - screenStartTime;
-        await createEvent({
-          user: userId,
-          screen: "Recycle",
-          Plantime: timeSpent,
-        });
+        console.log(timeSpent);
+        try {
+          await createEvent({
+            user: userId,
+            screen: "Recycle",
+            Plantime: timeSpent,
+          });
+        } catch (error) {
+          console.error("Error creating event:", error);
+        }
       };
     }, [])
   );
+
   useEffect(() => {
     getRePlans();
   }, [modalVisible]);
