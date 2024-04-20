@@ -84,7 +84,6 @@ export default function PlanScreen() {
         }
       };
 
-      console.log("hi");
       fetchData();
 
       return async () => {

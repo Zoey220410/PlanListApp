@@ -42,7 +42,6 @@ export default function BinScreen() {
       const fetchData = async () => {
         try {
           await getRePlans();
-          setScreenStartTime(Date.now());
         } catch (error) {
           console.error("Error fetching todos:", error);
         }
