@@ -38,6 +38,7 @@ export default function BinScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
+      let screenStartTime = Date.now();
       const fetchData = async () => {
         try {
           await getRePlans();
@@ -51,6 +52,7 @@ export default function BinScreen() {
 
       return async () => {
         const timeSpent = Date.now() - screenStartTime;
+        console.log(timeSpent);
         try {
           await createEvent({
             user: userId,

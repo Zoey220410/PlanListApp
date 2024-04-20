@@ -75,6 +75,7 @@ export default function PlanScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
+      let screenStartTime = Date.now();
       const fetchData = async () => {
         try {
           await getTodos();
