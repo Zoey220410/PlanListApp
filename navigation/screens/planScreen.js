@@ -12,15 +12,16 @@ import Task from "../../components/Task";
 import Plan from "../../components/Plan";
 import { getPlans } from "../../firebase-backend/plans-db";
 import { deleteTodo } from "../../firebase-backend/plans-db";
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import { createRecyclePlans } from "../../firebase-backend/recyclePlans-db";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { getWeather } from "../../firebase-backend/weatherController";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
+import * as Location from "expo-location";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -59,34 +60,58 @@ export default function PlanScreen() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(null);
   const [weather, setWeather] = useState(null);
+  const [location, setLocation] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
 
   const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
     AuthenticatedUserContext
   );
 
+  const userId = user ? user.uid : "";
+
+  const navigatation = useNavigation();
+
   useFocusEffect(
     React.useCallback(() => {
-      fetchWeatherData();
-      setUserId(user ? user.uid : "");
       getTodos();
     }, [])
   );
 
-  const fetchWeatherData = async () => {
-    try {
-      const weatherData = await getWeather(33, 84);
-      setWeather(weatherData.main.temp);
-    } catch (error) {
-      console.error("Error fetching weather data:", error);
-    }
-  };
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      try {
+        console.log(location);
+        if (location === null) return;
+        const weatherData = await getWeather(
+          location.coords.latitude,
+          location.coords.longitude
+        );
+        console.log(location.latitude);
+        setWeather(weatherData.main.temp);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    };
+    fetchWeatherData();
+  }, [location]);
 
   useEffect(() => {
     getTodos();
-  }, [modalVisible, choice]);
+  }, [modalVisible, choice, user]);
 
   const getTodos = async () => {
     try {
@@ -167,13 +192,23 @@ export default function PlanScreen() {
     <View style={styles.container}>
       <View style={styles.headTitle}>
         <Text style={styles.text}>Plans Today</Text>
-        <Text>T: {weather}</Text>
+        <IconButton
+          icon="delete"
+          onPress={() => navigatation.navigate("Recycle")}
+        />
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
         </TouchableOpacity>
       </View>
+
+      <Text>
+        Temperature:{" "}
+        {location
+          ? Math.round(((weather - 273.15) * 9) / 5 + 32)
+          : "Waiting for location..."}
+      </Text>
 
       <View style={styles.classify}>
         <Button

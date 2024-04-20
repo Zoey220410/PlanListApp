@@ -21,7 +21,6 @@ const LoginScreen = () => {
     if (email !== "" && password !== "") {
       const user = await signIn(email, password);
       setUser(user);
-      console.log(user);
     }
   };
   return (

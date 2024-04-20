@@ -59,7 +59,7 @@ export default function MainContainer() {
         })}
       >
         <Tab.Screen name={planName} component={PlanScreen} />
-        <Tab.Screen name={binName} component={BinScreen} />
+        {/* <Tab.Screen name={binName} component={BinScreen} /> */}
         <Tab.Screen name={discoverName} component={DiscoverScreen} />
         <Tab.Screen name={profileName} component={ProfileScreen} />
       </Tab.Navigator>
@@ -74,6 +74,7 @@ export default function MainContainer() {
           component={BottomTabNavigator}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Recycle" component={BinScreen} />
         <Stack.Screen name="PostDetail" component={PostDetail} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignupScreen} />

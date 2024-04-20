@@ -49,6 +49,10 @@ const Plan = ({ visible, onClose }) => {
 
   const handleSubmit = async () => {
     try {
+      if (!user) {
+        alert("Please log in first.");
+        return;
+      }
       if (plan.trim() === "") {
         alert("Please input a plan.");
         return;

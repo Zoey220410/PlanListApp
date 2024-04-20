@@ -26,7 +26,12 @@ export default function BinScreen() {
   const [tag, setTag] = useState(null);
   const [alarmReminder, setAlarmReminder] = useState(null);
   const [reAddId, setReAddId] = useState(null);
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
+  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
+    AuthenticatedUserContext
+  );
+
+  const userId = user ? user.uid : "";
 
   useFocusEffect(
     React.useCallback(() => {
@@ -38,13 +43,13 @@ export default function BinScreen() {
     getRePlans();
   }, [modalVisible]);
 
-  const { user, setUser, userAvatarUrl, setUserAvatarUrl } = useContext(
-    AuthenticatedUserContext
-  );
+  // useEffect(() => {
+  //   setUserId(user ? user.uid : "");
+  //   getRePlans();
+  // }, []);
 
   const getRePlans = async () => {
     try {
-      setUserId(user ? user.uid : "");
       const binPlans = await getRecyclePlans(userId);
       setBin(binPlans);
     } catch (error) {

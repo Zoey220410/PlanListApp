@@ -4,6 +4,8 @@ const key = "c1fc1b795d54119cad71d910c54064ae";
 
 export const getWeather = async (lat, lon) => {
   try {
+    console.log(lat);
+    console.log(lon);
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`;
     const weatherResponse = await axios.get(url);
 
