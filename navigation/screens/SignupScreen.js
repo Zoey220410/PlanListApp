@@ -7,7 +7,7 @@ import { Alert } from "react-native";
 import { signUp } from "../../firebase-backend/userController";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 
-const backImage = require("../../assets/favicon.png");
+const backImage = require("../../assets/background_signup.jpg");
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -166,10 +166,10 @@ const SignupScreen = () => {
             top: 120,
           }}
         >
-          {/* <Text>Already have an account ?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text>Already have an account ?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
             <Text style={{ color: "#d60e45", fontWeight: "500" }}>Sign in</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
       </View>
     </KeyboardAwareScrollView>

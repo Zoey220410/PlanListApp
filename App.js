@@ -1,5 +1,5 @@
 import * as React from "react";
-import MainContainer from "./navigation/mainContainer";
+import RootNavigator from "./navigation/mainContainer";
 import { initializeApp } from "firebase/app";
 // import { vexo } from "vexo-analytics";
 import { getAuth } from "firebase/auth";
@@ -7,6 +7,7 @@ import { getDatabase } from "firebase/database";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import AuthenticatedUserProvider from "./Context/AuthenticationContext";
+import { StatusBar } from "react-native";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwgwsrPdFxnyx1R8w7LEP6nFEJv4XP_6s",
@@ -28,9 +29,10 @@ const auth = getAuth(app);
 
 function App() {
   return (
-    <AuthenticatedUserProvider>
-      <MainContainer />
-    </AuthenticatedUserProvider>
+   <AuthenticatedUserProvider>
+       <RootNavigator />
+       <StatusBar barStyle={"default"} />
+   </AuthenticatedUserProvider>
   );
 }
 

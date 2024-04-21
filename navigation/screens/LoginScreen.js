@@ -7,7 +7,7 @@ import { signIn } from "../../firebase-backend/userController";
 import { AuthenticatedUserContext } from "../../Context/AuthenticationContext";
 //import { registerIndieID } from "native-notify";
 //import { processAuthError } from "../Utils";
-
+//import { SignupScreen } from "./SignupScreen";
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
@@ -54,6 +54,7 @@ const LoginScreen = () => {
 
       <TextInput
         style={{
+          marginTop : 60,
           letterSpacing: 2,
           backgroundColor: "#f3f3f3",
           borderRadius: 10,
@@ -62,8 +63,7 @@ const LoginScreen = () => {
           paddingVertical: 8,
           paddingHorizontal: 4,
           marginHorizontal: 12,
-          marginBottom: 20,
-          top: 40,
+          marginBottom: 60,
         }}
         placeholder="Enter Email"
         autoCapitalize="none"
@@ -83,7 +83,7 @@ const LoginScreen = () => {
           paddingHorizontal: 4,
           marginHorizontal: 12,
           marginBottom: 20,
-          top: 60,
+
         }}
         placeholder="Enter Password"
         secureTextEntry={true}
@@ -102,9 +102,8 @@ const LoginScreen = () => {
             paddingVertical: 8,
             borderRadius: 5,
             marginHorizontal: 40,
-            marginTop: 20,
-            marginBottom: 12,
-            top: 100,
+            marginTop: 40,
+            marginBottom: 20,
           }}
         >
           <Text
@@ -124,11 +123,11 @@ const LoginScreen = () => {
         style={{
           alignItems: "center",
           justifyContent: "center",
-          top: 100,
+          marginTop : 10,
         }}
       >
         <Text>Don't have an account ?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+        <TouchableOpacity onPress={() => navigation.navigate("SignupScreen")}>
           <Text style={{ color: "#d60e45", fontWeight: "500" }}>Sign up</Text>
         </TouchableOpacity>
       </View>
