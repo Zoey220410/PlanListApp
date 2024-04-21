@@ -113,7 +113,7 @@ const Plan = ({ visible, onClose }) => {
               value={startTime}
               mode={"date"}
               is24Hour={true}
-              onChange={onChange2}
+              onChange={onChange1}
             />
             <DateTimePicker
               testID="dateTimePicker"
