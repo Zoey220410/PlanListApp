@@ -9,23 +9,6 @@ export const getWeather = async (lat, lon) => {
 
     const weatherData = weatherResponse.data;
     return weatherData;
-    const temperature = weatherData.current.temp_c;
-    const condition = weatherData.current.condition.text;
-
-    // 构造日程安排建议
-    let scheduleAdvice = "";
-
-    if (temperature > 25) {
-      scheduleAdvice = "It's hot today. Consider scheduling indoor activities.";
-    } else if (temperature < 10) {
-      scheduleAdvice =
-        "It's cold today. Consider scheduling outdoor activities.";
-    } else {
-      scheduleAdvice = "The weather is moderate. Enjoy your day!";
-    }
-
-    // 将日程安排建议发送回日历应用
-    res.json({ advice: scheduleAdvice });
   } catch (error) {
     console.error("Error:", error);
   }
