@@ -214,10 +214,15 @@ export default function PlanScreen() {
     setChoice(tags[buttonId]);
   };
 
+  const handleFresh = async () => {
+    await getPlans();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headTitle}>
         <Text style={styles.text}>Plans Today</Text>
+        {/* <IconButton icon="refresh" size={20} onPress={handleFresh} /> */}
         <IconButton
           icon="delete"
           onPress={() => navigatation.navigate("Recycle")}
