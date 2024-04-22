@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 // import PushNotification from "react-native-push-notification";
-import Task from "../../components/Task";
+import Task from "../../components/task";
 import Plan from "../../components/Plan";
 import { getPlans } from "../../firebase-backend/plans-db";
 import { deleteTodo } from "../../firebase-backend/plans-db";

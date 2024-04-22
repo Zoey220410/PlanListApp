@@ -38,8 +38,12 @@ const ProfileScreen = () => {
       user: user.uid,
     });
     setTotalTime(res.Bin + res.Main);
-    await signOutUser();
-    setUser(null);
+    setTimeout(async () => {
+      await signOutUser();
+      setUser(null);
+    }, 5000);
+    // await signOutUser();
+    // setUser(null);
   };
 
   if (user) {
@@ -68,6 +72,7 @@ const ProfileScreen = () => {
           >
             <Text style={{ textAlign: "center" }}>Logout</Text>
           </TouchableOpacity>
+          {totalTime !== 0 ? <Text>Test Time: {totalTime} </Text> : null}
         </View>
       </View>
     );
@@ -186,7 +191,6 @@ const ProfileScreen = () => {
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
             <Text style={{ color: "#d60e45", fontWeight: "500" }}>Sign up</Text>
           </TouchableOpacity>
-          {totalTime !== 0 ? <Text>Test Time: {totalTime} </Text> : null}
         </View>
       </View>
     </KeyboardAwareScrollView>
